@@ -1,6 +1,6 @@
 import Ship from './Ship';
 
-describe('Test Suite', () => {
+describe('Test Suite for Ship', () => {
   it('Creates a ship of length 4', () => {
     const boat = Ship(4);
     expect(boat.getLength()).toBe(4);
