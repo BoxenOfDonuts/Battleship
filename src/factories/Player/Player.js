@@ -1,5 +1,3 @@
-import Gameboard from '../Gameboard/Gameboard';
-
 
 const attackOpponent = () => ({
   attack: (opponentsGameboard, coordinate) => {
@@ -20,9 +18,9 @@ const computerAttackOpponent = () => ({
   }
 })
 
-const Player = () => {
+const Player = (gameboard) => {
   const data = {
-    gameboard: () => Gameboard(),
+    gameboard: () => gameboard,
 
   }
   return {

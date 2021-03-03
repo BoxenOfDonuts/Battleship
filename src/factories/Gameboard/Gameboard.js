@@ -1,7 +1,5 @@
-import Ship from '../Ship/Ship'
-
 const Gameboard = () => {
-  const board = Array(72).fill(null);
+  const board = Array(100).fill(null);
   const inventory = []
   let areAllSunk = false;
   let sunkCount = 0;
@@ -13,10 +11,9 @@ const Gameboard = () => {
     }
   }
 
-  const placeShip = (coordinate, length, isVertical) => {
-    const ship = Ship(length);
+  const placeShip = (ship, coordinate, isVertical) => {
     if (!isVertical) ship.flipOrientation();
-    for (let i = coordinate; i < coordinate + length; i++) {
+    for (let i = coordinate; i < coordinate + ship.getLength(); i++) {
       board.splice(i, 1, ship)
     }
     inventory.push(ship)
