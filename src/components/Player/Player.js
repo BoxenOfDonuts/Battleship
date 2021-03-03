@@ -15,7 +15,6 @@ const computerAttackOpponent = () => ({
       }
       return false;
     })
-    console.log(`open spots ${openSpots}`)
     const randomAttack = Math.floor(Math.random() * openSpots.length);
     attackOpponent().attack(opponentsGameboard, randomAttack)
   }

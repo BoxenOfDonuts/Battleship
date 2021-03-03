@@ -7,7 +7,6 @@ describe('Player Test Suite', () => {
     const opponent = Gameboard();
     opponent.placeShip(0, 1, false)
     player.attack(opponent,0)
-    console.log(opponent.theBoard()[0].isSunk())
   })
   it('computer attackes open spot', () => {
     const player = Player();
@@ -19,6 +18,5 @@ describe('Player Test Suite', () => {
     expect(opponent.theBoard()).not.toContain(false);
     player.computerAttack(opponent)
     expect(opponent.theBoard()).toContain(false);
-    console.log(opponent.theBoard());
   })
 })
