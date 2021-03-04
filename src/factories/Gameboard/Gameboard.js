@@ -20,9 +20,9 @@ const Gameboard = () => {
   }
 
   const recieveAttack = (coordinate) => {
-    if (board[coordinate] !== null) {
+    if (board[coordinate] !== null && board[coordinate] !== false) {
       const ship = board[coordinate];
-      ship.hit(0);
+      ship.hit();
       if (ship.isSunk()) {
         _shipSunk();
       }

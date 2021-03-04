@@ -20,5 +20,5 @@ describe('Player Test Suite', () => {
     player.computerAttack(opponent)
     expect(opponent.theBoard()).toContain(false);
   })
-  it.skip('Check for bad input into hit')
+  // it('Check for bad input into hit')
 })

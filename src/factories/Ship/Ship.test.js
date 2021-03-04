@@ -16,7 +16,7 @@ describe('Test Suite for Ship', () => {
     boat.hit(1);
     boat.hit(0);
     expect(boat.isSunk()).toBe(false);
-    boat.hit(2);
+    boat.hit();
     expect(boat.isSunk()).toBe(true);
   })
   it('orientation handled correctly', () => {

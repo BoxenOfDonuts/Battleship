@@ -51,4 +51,9 @@ describe('Test Suite for Gameboard', () => {
     gameboard.recieveAttack(0);
     expect(gameboard.sink()).toBe(true)
   })
+  it('if we forget to disable click and they click the same spot twice nothing happens', () => {
+    const gameboard = Gameboard();
+    gameboard.recieveAttack(0);
+    expect(() => gameboard.recieveAttack(0)).not.toThrow()
+  })
 })
