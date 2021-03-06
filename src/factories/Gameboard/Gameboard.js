@@ -22,7 +22,19 @@ const Gameboard = () => {
   const recieveAttack = (coordinate) => {
     if (board[coordinate] !== null && board[coordinate] !== false) {
       const ship = board[coordinate];
-      ship.hit();
+      let array = ['x']
+      const searchInt = ship.isVertical() ? 10 : 1
+      coordinate = coordinate - searchInt;
+      while (board[coordinate]) {
+        array.unshift('o');
+        coordinate = coordinate - searchInt;
+      }
+      while (board[coordinate]) {
+        array.unshift('o');
+        coordinate = coordinate + searchInt;
+      }
+
+      ship.hit(array.indexOf('x'));
       if (ship.isSunk()) {
         _shipSunk();
       }

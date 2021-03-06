@@ -23,9 +23,10 @@ describe('Test Suite for Gameboard', () => {
     const ship = Ship(3)
     gameboard.placeShip(ship, 7, false);
     gameboard.recieveAttack(7);
-    expect(gameboard.theBoard()[7].getHull()).toEqual(1)
-    expect(gameboard.theBoard()[8].getHull()).toEqual(1)
-    expect(gameboard.theBoard()[9].getHull()).toEqual(1)
+    // breaking because we pass in a board coord not a position on the ship
+    expect(gameboard.theBoard()[7].getHull()).toEqual([true, false, false])
+    expect(gameboard.theBoard()[8].getHull()).toEqual([true, false, false])
+    expect(gameboard.theBoard()[9].getHull()).toEqual([true, false, false])
   })
   it('misses are tracked', () => {
     const gameboard = Gameboard();
@@ -37,12 +38,12 @@ describe('Test Suite for Gameboard', () => {
   it('creates multiple unique ships', () => {
     const gameboard = Gameboard();
     const ship = Ship(3);
-    const ship2 = Ship(1);
+    const ship2 = Ship(2);
     gameboard.placeShip(ship, 7, false);
     gameboard.placeShip(ship2, 0, false);
     gameboard.recieveAttack(0);
-    expect(gameboard.theBoard()[0].getHull()).toEqual(1)
-    expect(gameboard.theBoard()[7].getHull()).toEqual(0)
+    expect(gameboard.theBoard()[0].getHull()).toEqual([true, false])
+    expect(gameboard.theBoard()[7].getHull()).toEqual([false, false, false])
   })
   it('sinking the last ship updates areAllSunk', () => {
     const gameboard = Gameboard();

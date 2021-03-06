@@ -8,15 +8,15 @@ describe('Test Suite for Ship', () => {
 
   it('hit takes a number and marks position as hit', () =>{
     const boat = Ship(3);
-    boat.hit();
-    expect(boat.getHull()).toEqual(1)
+    boat.hit(0);
+    expect(boat.getHull()).toEqual([true, false, false])
   })
   it('hitting boat sinks it correctly', ()=> {
     const boat = Ship(3);
     boat.hit(1);
     boat.hit(0);
     expect(boat.isSunk()).toBe(false);
-    boat.hit();
+    boat.hit(2);
     expect(boat.isSunk()).toBe(true);
   })
   it('orientation handled correctly', () => {
