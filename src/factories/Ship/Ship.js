@@ -1,31 +1,22 @@
 const shipHelpers = (data) => ({
-  hit: (position) => data.hull[position] = true,
-  getHull: () => data.hull,
-  getLength: () => data.length,
-  flipOrientation: () => data.isVertical = !data.isVertical,
+  // hit isn't validating, expecting gameboard to manage that
+  hit: (position) => data.hits.push(position),
+  isSunk: () => data.positions.every(position => data.hits.includes(position)),
+  getLength: () => data.positions.length,
   isVertical: () => data.isVertical,
-  isSunk: () => {
-    const hitCount = data.hull.reduce((accum, value) => {
-      if (value) {
-        return ++accum
-      }
-      return accum;
-    }, 0)
-    return hitCount === data.length;
-  }
 })
 
 
-const Ship = (length) => {
+const Ship = (name, positions) => {
   const data = {
-    length,
-    hull: Array(length).fill(false),
-    // hull: 0,
-    isSunk: false,
+    name,
+    positions,
+    hits: [],
     isVertical: true,
   }
 
   return {
+    data,
     ...shipHelpers(data),
   }
 

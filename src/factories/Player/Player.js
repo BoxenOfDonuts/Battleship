@@ -1,4 +1,6 @@
 
+import Gameboard from '../Gameboard/Gameboard'
+
 const attackOpponent = () => ({
   attack: (opponentsGameboard, coordinate) => {
     opponentsGameboard.recieveAttack(coordinate);
@@ -18,9 +20,11 @@ const computerAttackOpponent = () => ({
   }
 })
 
-const Player = (gameboard) => {
+const Player = (name) => {
   const data = {
-    gameboard: () => gameboard,
+    name,
+    ships: [],
+    gameboard: () => Gameboard(),
 
   }
   return {

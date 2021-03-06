@@ -72,9 +72,13 @@ const Board = (props) => {
 }
 
 const Game = () => {
+  /// I think i'm doing this all wrong, and need to not store the state of the thing in the object?
+  // its kind of what the instructions said but with react it doesn't make any sense right?
   const [board, setBoard] = useState(Gameboard())
   const [player, setPlayer] =useState(null)
   const [update, setUpdate] = useState(0)
+  const [fakeBoard, setFakeBoard] = useState(Array(100).fill(null));
+  console.log("rendering")
 
   useEffect(() => {
     board.placeShip(Ship(3), 0, false)

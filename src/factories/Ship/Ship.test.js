@@ -1,28 +1,44 @@
 import Ship from './Ship';
 
 describe('Test Suite for Ship', () => {
-  it('Creates a ship of length 4', () => {
-    const boat = Ship(4);
-    expect(boat.getLength()).toBe(4);
+  let carrier;
+  let sub;
+
+  beforeEach(() => {
+    carrier = Ship('carrier', [0,1,2,3,4]);
+    sub = Ship('sub', [22,23,24]);
+  })
+  it('creates both ships', () => {
+    expect(carrier).toBeDefined()
+    expect(sub).toBeDefined()
   })
 
-  it('hit takes a number and marks position as hit', () =>{
-    const boat = Ship(3);
-    boat.hit(0);
-    expect(boat.getHull()).toEqual([true, false, false])
+  it('each ship takes a hit', () => {
+    carrier.hit(0);
+    sub.hit(24);
+    expect(carrier.data.hits).toEqual([0]);
+    expect(sub.data.hits).toEqual([24]);
   })
-  it('hitting boat sinks it correctly', ()=> {
-    const boat = Ship(3);
-    boat.hit(1);
-    boat.hit(0);
-    expect(boat.isSunk()).toBe(false);
-    boat.hit(2);
-    expect(boat.isSunk()).toBe(true);
+  it('takes multiple hits', () => {
+    carrier.hit(0);
+    carrier.hit(1);
+    carrier.hit(4);
+    expect(carrier.data.hits).toEqual([0,1,4])
+    expect(carrier.isSunk()).not.toBe(true)
   })
-  it('orientation handled correctly', () => {
-    const boat = Ship(1);
-    expect(boat.isVertical()).toBe(true);
-    boat.flipOrientation();
-    expect(boat.isVertical()).toBe(false);
+  it('takes multiple hits and sinks', () => {
+    carrier.hit(0);
+    carrier.hit(1);
+    carrier.hit(4);
+    expect(carrier.data.hits).toEqual([0,1,4]);
+    expect(carrier.isSunk()).not.toBe(true);
+    carrier.hit(2);
+    carrier.hit(3);
+    expect(carrier.data.hits).toEqual([0,1,4,2,3]);
+    expect(carrier.isSunk()).toBe(true);
+  })
+  it('correctly calculates length', () => {
+    expect(carrier.getLength()).toBe(5);
+    expect(sub.getLength()).toBe(3);
   })
 })
