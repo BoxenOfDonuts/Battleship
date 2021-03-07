@@ -17,7 +17,7 @@ const Gameboard = () => {
     for (let position of ship.data.positions) {
       board[position].ship = ship;
     }
-    return board
+    return board;
   }
 
   const recieveAttack = (position) => {

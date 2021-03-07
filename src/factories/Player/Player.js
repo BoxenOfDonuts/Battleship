@@ -22,10 +22,8 @@ const computerAttackOpponent = () => ({
         openSpots.push(index)
       }
     }
-
-    console.log(openSpots)
     const randomAttack = Math.floor(Math.random() * openSpots.length);
-    return attackOpponent().attack(opponentsGameboard, randomAttack)
+    return [attackOpponent().attack(opponentsGameboard, randomAttack), randomAttack]
   }
 })
 
