@@ -3,20 +3,29 @@ import Gameboard from '../Gameboard/Gameboard'
 
 const attackOpponent = () => ({
   attack: (opponentsGameboard, coordinate) => {
-    opponentsGameboard.recieveAttack(coordinate);
+    if (opponentsGameboard.board[coordinate].shot === true) return;
+    return opponentsGameboard.recieveAttack(coordinate);
   }
 })
 
 const computerAttackOpponent = () => ({
   computerAttack: (opponentsGameboard) => {
-    let openSpots = opponentsGameboard.theBoard().filter(value => {
-      if (value === null) {
-        return true
+    // let openSpots = opponentsGameboard.board.map((value, index) => {
+    //   if (value.shot || value.ship) {
+    //     return value;
+    //   }
+    //   return index;
+    // })
+    let openSpots = [];
+    for (let index in opponentsGameboard.board) {
+      if(!opponentsGameboard.board[index].shot) {
+        openSpots.push(index)
       }
-      return false;
-    })
+    }
+
+    console.log(openSpots)
     const randomAttack = Math.floor(Math.random() * openSpots.length);
-    attackOpponent().attack(opponentsGameboard, randomAttack)
+    return attackOpponent().attack(opponentsGameboard, randomAttack)
   }
 })
 
