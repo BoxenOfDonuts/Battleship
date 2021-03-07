@@ -107,7 +107,6 @@ describe('Test Suite for Gameboard', () => {
     const didHit = gameboard.recieveAttack(0);
     expect(didHit).toBe(true)
     expect(gameboard.board[0].shot).toBe(true)
-  
   })
 
   it('can mark a miss on the board', () => {
