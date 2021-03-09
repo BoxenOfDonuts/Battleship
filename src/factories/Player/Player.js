@@ -24,7 +24,6 @@ const computerAttackOpponent = () => ({
     }
     const randomIndex = Math.floor(Math.random() * openSpots.length);
     const randomAttack = openSpots[randomIndex]
-    console.log(openSpots.length, typeof randomAttack)
     return [attackOpponent().attack(opponentsGameboard, randomAttack), randomAttack]
   }
 })
