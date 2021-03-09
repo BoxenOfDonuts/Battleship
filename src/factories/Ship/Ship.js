@@ -1,9 +1,15 @@
-const shipHelpers = (data) => ({
-  // hit isn't validating, expecting gameboard to manage that
-  hit: (position) => data.hits.push(position),
+const shipInfo = (data) => ({
   isSunk: () => data.positions.every(position => data.hits.includes(position)),
   getLength: () => data.positions.length,
   isVertical: () => data.isVertical,
+})
+
+const shipAttacks = (data) => ({
+  // hit isn't validating, expecting gameboard to manage that
+  hit: (position) => {
+    data.hits.push(position);
+    return shipInfo(data).isSunk();
+  },
 })
 
 
@@ -17,7 +23,8 @@ const Ship = (name, positions) => {
 
   return {
     data,
-    ...shipHelpers(data),
+    ...shipAttacks(data),
+    ...shipInfo(data),
   }
 
 }

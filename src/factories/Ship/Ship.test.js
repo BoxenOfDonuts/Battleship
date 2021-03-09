@@ -33,7 +33,7 @@ describe('Test Suite for Ship', () => {
     expect(carrier.data.hits).toEqual([0,1,4]);
     expect(carrier.isSunk()).not.toBe(true);
     carrier.hit(2);
-    carrier.hit(3);
+    expect(carrier.hit(3)).toBe(true);
     expect(carrier.data.hits).toEqual([0,1,4,2,3]);
     expect(carrier.isSunk()).toBe(true);
   })
