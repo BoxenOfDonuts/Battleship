@@ -25,12 +25,12 @@ describe('Player Test Suite', () => {
   it('computer attackes open spot', () => {
     const player = Player();
     const opponent = Gameboard();
-    for (let i = 1; i < opponent.board.length; i++) {
+    for (let i = 0; i < opponent.board.length; i++) {
       opponent.recieveAttack(i);
     }
-    expect(opponent.board[0]).not.toEqual({shot:true, ship:false});
-    expect(opponent.board[1]).toEqual({shot:true, ship:false});
-    player.computerAttack(opponent)
-    expect(opponent.board[0]).toEqual({shot:true, ship:false});
+    opponent.board[80].shot = false;
+    expect(opponent.board[80]).not.toEqual({shot:true, ship:false});
+    expect(player.computerAttack(opponent)).toEqual([false, 80])
+    expect(opponent.board[80]).toEqual({shot:true, ship:false});
   })
 })
