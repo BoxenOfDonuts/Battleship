@@ -1,17 +1,22 @@
-const Gameboard = () => {
-  const board = Array(100).fill(null).map(value => ({shot: false, ship: false}))
+const Gameboard = (board) => {
+  // const board = Array(100).fill(null).map(value => ({shot: false, ship: false}))
   const inventory = []
   let areAllSunk = false;
   let sunkCount = 0;
 
+  if (!board) {
+    // console.error('using default board, please pass board into gameboard object')
+    board = Array(100).fill(null).map(value => ({shot: false, ship: false}))
+  }
+
   const placeShip = (ship) => {
     
     //// Does not mutate the board, not sure which I want at this point
-    //const newBoard = [...board]
+    // const newBoard = [...board]
     // for (let position of ship.data.positions) {
-    //   newBoard[position] = {...board[position], ship: ship}
+    //   newBoard[position] = {...board[position], ship: true}
     // }
-    //return newBoard;
+    // return newBoard;
 
     // mutates the board
     for (let position of ship.data.positions) {
