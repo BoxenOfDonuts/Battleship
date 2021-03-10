@@ -25,8 +25,21 @@ const computerAttackOpponent = () => ({
     const randomIndex = Math.floor(Math.random() * openSpots.length);
     const randomAttack = openSpots[randomIndex]
     return [attackOpponent().attack(opponentsGameboard, randomAttack), randomAttack]
+  },
+  randomOpenSpot: (opponentsGameboard) => {
+    let openSpots = [];
+    for (let index in opponentsGameboard.board) {
+      if(!opponentsGameboard.board[index].shot) {
+        openSpots.push(Number(index))
+      }
+    }
+    const randomIndex = Math.floor(Math.random() * openSpots.length);
+    const randomAttack = openSpots[randomIndex];
+    return randomAttack;
   }
+
 })
+
 
 const Player = (name) => {
   const data = {
