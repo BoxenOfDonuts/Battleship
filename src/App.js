@@ -26,8 +26,9 @@ const fakeSetup = (board) => {
 }
 
 const updatePlayerState = (state, action) => {
+
   switch(action.id) {
-    case "attack": {
+    case "attack": 
       const newState = {...state}
       const { coordinate, opponent } = action.params;
       let count = newState[opponent].sunkCount;
@@ -47,9 +48,9 @@ const updatePlayerState = (state, action) => {
           ...state[opponent],
           board: opponentsBoard,
           sunkCount: count,
-        }
+        },
       };
-    }
+    
     
     case "computerAttack": {
       console.log('hi')
@@ -67,6 +68,14 @@ const updatePlayerState = (state, action) => {
       }
 
     }
+    case "message": {
+      const { message } = action;
+      console.log({...state, message,})
+      return {
+        ...state,
+        message,
+      }
+    }
     default:
       console.log('hi')
   }
@@ -74,22 +83,29 @@ const updatePlayerState = (state, action) => {
 }
 
 const Game = () => {
+  /// okay joel for-real we have to figure out the refactor... ships into its own list or SOMETHING
+  // maybe a useEffect when gameboard changes that checks ship status?? or all in one HUGE STATE?? cry.. 
+  // the logic needs to be outside the reducer, then can pass in params -.-
+
   const [ players, setPlayers ] = useReducer(
     updatePlayerState,
-    { human:
-      {
-        player: Player("Joel"),
-        board: Gameboard(),
-        ships: [],
-        sunkCount: 0,
-      },
-    computer:
-      {
-        player: Player("Bob"),
-        board: Gameboard(),
-        ships: [],
-        sunkCount: 0,
-      },
+    {
+      human:
+        {
+          player: Player("Joel"),
+          board: Gameboard(),
+          ships: [],
+          sunkCount: 0,
+        },
+      computer:
+        {
+          player: Player("Bob"),
+          board: Gameboard(),
+          ships: [],
+          sunkCount: 0,
+        },
+      message: '',
+      winner: '',
     }
   );
 
@@ -104,8 +120,22 @@ const Game = () => {
   useEffect(() => {
     if (turn < 1) return;
     console.log('fired')
-    const coordinate = players.computer.player.randomOpenSpot(players.human.board);
+    // const coordinate = players.computer.player.randomOpenSpot(players.human.board);
+    // setPlayers({id: 'attack', params: {coordinate, opponent: 'human'}})
+    const [isHit, coordinate ] = players.human.player.computerAttack(players.human.board)
+    if (isHit) {
+      /// okay okay so the ATTACK doesn't do anything, its up to the HIT
+      // god it needs to be a refactor then. I hate having to mange this weird internal state
+      setPlayers({id: 'message', message: 'hit!'})
+      const isSunk = players.human.board.board[coordinate].ship.hit(coordinate)
+      if (isSunk) {
+        setPlayers({id: 'message', message: 'sunk!'})
+      }
+      
+    }
     setPlayers({id: 'attack', params: {coordinate, opponent: 'human'}})
+
+
   },[turn])
 
   const attackCoordinate = (coordinate, board) => {
@@ -117,7 +147,7 @@ const Game = () => {
     <div>
       <Board gameboard={players.human.board} clickable={false}/>
       <Board gameboard={players.computer.board} attack={attackCoordinate}/>
-      <p>{r}</p>
+      <p>{players.message}</p>
     </div>
   )
 
