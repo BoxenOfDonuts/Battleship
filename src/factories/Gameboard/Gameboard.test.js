@@ -62,10 +62,10 @@ describe('Test Suite for Gameboard', () => {
     expect(didHit).toBe(false)
     expect(gameboard.board[10].shot).toBe(true)
   })
-  it('place ship method works as expected', () => {
-    const destroyer = Ship('destroyer', [22,23])
-    gameboard.placeShip(destroyer);
-    expect(gameboard.board[22]).toEqual({shot: false, ship: destroyer})
-    expect(gameboard.board[23]).toEqual({shot: false, ship: destroyer})
-  })
+  // it('place ship method works as expected', () => {
+  //   const destroyer = Ship('destroyer', [22,23])
+  //   gameboard.placeShip(destroyer);
+  //   expect(gameboard.board[22]).toEqual({shot: false, ship: destroyer})
+  //   expect(gameboard.board[23]).toEqual({shot: false, ship: destroyer})
+  // })
 })

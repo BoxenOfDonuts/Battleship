@@ -16,9 +16,9 @@ const Square = ({coordinate, board, attack, clickable}) => {
     if (shot) {
       style['backgroundColor'] = 'red';
     }
-    if (ship.isSunk()) {
-      style['backgroundColor'] = 'black';
-    }
+    // if (ship.isSunk()) {
+    //   style['backgroundColor'] = 'black';
+    // }
   }
 
   if (clickable ===false || shot) {

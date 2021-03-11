@@ -18,7 +18,6 @@ const Ship = (name, positions) => {
     name,
     positions,
     hits: [],
-    isVertical: true,
   }
 
   return {

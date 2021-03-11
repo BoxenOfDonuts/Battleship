@@ -20,7 +20,7 @@ const Gameboard = (board) => {
 
     // mutates the board
     for (let position of ship.data.positions) {
-      board[position].ship = ship;
+      board[position].ship = true;
     }
     return board;
   }
