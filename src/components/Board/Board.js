@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import Square from '../Square/Square';
 
 const Board = (props) => {
@@ -37,4 +38,4 @@ const Board = (props) => {
   );
 }
 
-export default Board;
+export default memo(Board);
