@@ -1,4 +1,5 @@
-import React from 'react'; 
+import { memo } from 'react';
+import React from 'react';
 
 const Square = ({ clickable, attack, coordinate, position, ships }) => {
   // console.log()
@@ -36,4 +37,4 @@ const Square = ({ clickable, attack, coordinate, position, ships }) => {
   )
 }
 
-export default React.memo(Square);
+export default Square;
