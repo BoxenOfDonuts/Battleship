@@ -1,4 +1,3 @@
-import { memo } from 'react';
 import React from 'react';
 
 const Square = ({ clickable, attack, coordinate, position, ships }) => {

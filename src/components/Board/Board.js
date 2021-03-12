@@ -2,8 +2,6 @@ import { memo } from 'react';
 import Square from '../Square/Square';
 
 const Board = (props) => {
-  const columns = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J']
-
   const renderRow = (index) => {
     const start = index * 10;
     const rows = Array(10)
