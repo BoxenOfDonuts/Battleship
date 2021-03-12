@@ -49,8 +49,6 @@ const Ship = (name, positions) => {
   const data = {
     name,
     positions,
-    hits: [],
-    isSunk: false
   }
 
   return {

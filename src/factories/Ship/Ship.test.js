@@ -12,31 +12,9 @@ describe('Test Suite for Ship', () => {
     expect(carrier).toBeDefined()
     expect(sub).toBeDefined()
   })
-
-  it('each ship takes a hit', () => {
-    carrier.hit(0);
-    sub.hit(24);
-    expect(carrier.data.hits).toEqual([0]);
-    expect(sub.data.hits).toEqual([24]);
-  })
-  it('takes multiple hits', () => {
-    carrier.hit(0);
-    carrier.hit(1);
-    carrier.hit(4);
-    expect(carrier.data.hits).toEqual([0,1,4])
-    expect(carrier.isSunk()).not.toBe(true)
-  })
-  it('takes multiple hits and sinks', () => {
-    carrier.hit(0);
-    carrier.hit(1);
-    carrier.hit(4);
-    expect(carrier.data.hits).toEqual([0,1,4]);
-    expect(carrier.isSunk()).not.toBe(true);
-    carrier.hit(2);
-    // expect(carrier.hit(3)).toBe(true);
-    expect(carrier.hit(3)).toBe("carrier");
-    expect(carrier.data.hits).toEqual([0,1,4,2,3]);
-    expect(carrier.isSunk()).toBe(true);
+  it('correctly stores ship position', () => {
+    expect(carrier.data.positions).toEqual([0,1,2,3,4])
+    expect(sub.data.positions).toEqual([22,23,24])
   })
   it('correctly calculates length', () => {
     expect(carrier.getLength()).toBe(5);
