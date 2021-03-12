@@ -26,8 +26,8 @@ const computerAttackOpponent = () => ({
   },
   randomOpenSpot: (opponentsGameboard) => {
     let openSpots = [];
-    for (let index in opponentsGameboard.board) {
-      if(!opponentsGameboard.board[index].shot) {
+    for (let index in opponentsGameboard) {
+      if(!opponentsGameboard[index].shot) {
         openSpots.push(Number(index))
       }
     }
