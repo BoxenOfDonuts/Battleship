@@ -1,4 +1,3 @@
-import React from 'react'; 
 import Square from '../Square/Square';
 
 const Board = (props) => {
@@ -13,9 +12,10 @@ const Board = (props) => {
       return <Square 
         key={boardIndex}
         coordinate={boardIndex}
-        board={props.gameboard}
         attack={props.attack}
         clickable={props.clickable}
+        ships={props.ships}
+        position={props.gameboard[boardIndex]}
       />
     })
 

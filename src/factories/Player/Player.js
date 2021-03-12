@@ -1,6 +1,4 @@
 
-import Gameboard from '../Gameboard/Gameboard'
-
 const attackOpponent = () => ({
   attack: (opponentsGameboard, coordinate) => {
     if (opponentsGameboard.board[coordinate].shot === true) return;
@@ -44,9 +42,6 @@ const computerAttackOpponent = () => ({
 const Player = (name) => {
   const data = {
     name,
-    ships: [],
-    gameboard: () => Gameboard(),
-
   }
   return {
     data,

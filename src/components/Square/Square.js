@@ -1,8 +1,8 @@
 import React from 'react'; 
 
-const Square = ({coordinate, board, attack, clickable}) => {
+const Square = ({ clickable, attack, coordinate, position, ships }) => {
   // console.log()
-  const {shot, ship} = board.board[coordinate];
+  const {shot, ship} = position;
   let style = {}
 
   if (!ship) {
@@ -15,10 +15,10 @@ const Square = ({coordinate, board, attack, clickable}) => {
     style['backgroundColor'] = 'blue';
     if (shot) {
       style['backgroundColor'] = 'red';
+      if (ships[ship].isSunk) {
+        style['backgroundColor'] = 'black';
+      }
     }
-    // if (ship.isSunk()) {
-    //   style['backgroundColor'] = 'black';
-    // }
   }
 
   if (clickable ===false || shot) {
@@ -29,7 +29,8 @@ const Square = ({coordinate, board, attack, clickable}) => {
     <button
       className="square"
       style={style}
-      onClick={() => attack(coordinate, board)}
+      // onClick={() => console.log(position)}
+      onClick={() => attack(coordinate)}
     >
     </button>
   )

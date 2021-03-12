@@ -1,10 +1,158 @@
 import './App.css';
-import Player from './factories/Player/Player';
-import Gameboard from './factories/Gameboard/Gameboard';
-import Ship from './factories/Ship/Ship';
 import ShipTypes from './factories/Ship/ShipTypes';
+import Ship from './factories/Ship/Ship'
+import Gameboard from './factories/Gameboard/Gameboard';
 import Board from './components/Board/Board';
+// import Player from './factories/Player/Player'
 import { useState, useEffect, useReducer} from 'react';
+
+const updatePlayerStates = (state, action) => {
+  switch (action.id) {
+    case "PLACE_SHIP": {
+               
+      const { name, coordinates } = action;
+      const ship = Ship(name, coordinates)
+      const shipPlacement = {
+        ...state.players.computer.ships,
+        [ship.data.name]: {
+          name: ship.data.name,
+          health: ship.getLength(),
+        }
+      }
+      console.log('ran again')
+      const newBoard = Gameboard.placeShip(ship, state.players[action.board].board)
+      return {
+        ...state,
+        players: {
+          ...state.players,
+          computer: {
+            ...state.players.computer,
+            board: newBoard,
+            ships: shipPlacement
+          }
+        },
+      };
+    }
+    case "ATTACK_SQUARE": {
+      const {opponent, coordinate} = action;
+      const newBoard = [...state.players[opponent].board]
+      newBoard[coordinate].shot = true;
+      return {
+        ...state,
+        players: {
+          ...state.players,
+          [opponent]: {
+            ...state.players[opponent],
+            board: newBoard
+          }
+        }
+      }
+    }
+    case "ATTACK_SHIP": {
+      const {opponent, coordinate} = action;
+      const shipKey = state.players[opponent].board[coordinate].ship;
+      const ship = state.players[opponent].ships[shipKey];
+      const newShips = {
+        ...state.players[opponent].ships,
+        [shipKey]: {
+          ...ship,
+          health: ship.health -1
+        }
+      }
+      if (newShips[shipKey].health === 0) {
+        newShips[shipKey].isSunk = true;
+      }
+      return {
+        ...state,
+        players: {
+          ...state.players,
+          [opponent]: {
+            ...state.players[opponent],
+            ships: newShips,
+          }
+        }
+      }
+    }
+    case "SEND_MESSAGE": {
+      console.log('hi')
+      return {
+        ...state,
+        message: action.message
+      }
+    }
+    default:
+      console.log("BAD ACTION ID")
+      console.error("BAD ACTION ID")
+  }
+
+}
+
+const Game = () => {
+  const [ game, setGame ] = useReducer(
+    updatePlayerStates,
+    {
+      players: {
+        computer: {
+          name: "HAL900",
+          board: [...Array(100).fill(null).map((value, index) =>({shot: false, ship: false}))],
+          ships: {
+          },
+        },
+        human: {
+          name: "Joel",
+          board: [...Array(100).fill(null).map((value, index) =>({shot: false, ship: false}))],
+          ships: {
+          },
+        },
+      },
+      message: 'a',
+      winner: '',
+    }
+  )
+
+  const attackCoordinate = (coordinate) => {
+    setGame({id: "ATTACK_SQUARE", coordinate, opponent: 'computer'})
+    if (game.players.computer.board[coordinate].ship) {
+      setGame({id: "SEND_MESSAGE", message: "Hit Enemy Ship!"})
+      setGame({id: "ATTACK_SHIP", coordinate, opponent: 'computer'})
+    } else {
+      setGame({id: "SEND_MESSAGE", message: "Miss!"})
+    }
+  }
+
+  useEffect(() => {
+    setGame({id: "PLACE_SHIP", board: 'computer', name: 'Carrier', coordinates: [0,1,2,3,4]})
+    setGame({id: "PLACE_SHIP", board: 'computer', name: 'Battleship', coordinates: [42,43,44,45]})
+    setGame({id: "PLACE_SHIP", board: 'computer', name: 'Destoyer', coordinates: [96,97,98]})
+    setGame({id: "PLACE_SHIP", board: 'computer', name: 'Submarine', coordinates: [64,65,66]})
+    setGame({id: "PLACE_SHIP", board: 'computer', name: 'Patrol Boat', coordinates: [22,23]})
+  },[])
+
+  useEffect(() => {
+    for (let shipKey in game.players.computer.ships) {
+      const ship = game.players.computer.ships[shipKey]
+      if (ship.isSunk) {
+        setGame({id: "SEND_MESSAGE", message: `Sunk enemy ${shipKey}`})
+      }
+    }
+  },[game.players.computer.ships, game.players.human.ships])
+  
+  return (
+    <div>
+      {/* <Board
+          gameboard={game.players.computer.board}
+          ships={game.players.human.ships}
+          clickable={false}
+      /> */}
+      <Board
+          gameboard={game.players.computer.board}
+          attack={attackCoordinate}
+          ships={game.players.computer.ships}
+      />
+      <p>{game.message}</p>
+    </div>
+    );
+}
 
 const App = () => {
   return (
@@ -14,168 +162,5 @@ const App = () => {
   );
 }
 
-const fakeSetup = (board) => {
-  const newBoard = {...board}
-  newBoard.placeShip(Ship('Carrier', [0,1,2,3,4]))
-  newBoard.placeShip(Ship('Battleship', [95,96,97,98]))
-  newBoard.placeShip(Ship('Sub', [45,46,47]))
-  newBoard.placeShip(Ship('Cruiser', [22,23,24]))
-  newBoard.placeShip(Ship('Destroyer', [65,66]))
-  return newBoard;
-}
-
-const updatePlayerState = (state, action) => {
-
-  switch(action.id) {
-    case "attack": 
-      const newState = {...state}
-      const { coordinate, opponent } = action.params;
-      let count = newState[opponent].sunkCount;
-      const opponentsBoard ={...state[opponent].board};
-      const newBoard = [...opponentsBoard.board];
-
-      if (newState[opponent].player.attack(opponentsBoard, coordinate)) {
-        const isSunk = newBoard[coordinate].ship.hit(coordinate)
-        if (isSunk) {
-          count++;
-        }
-      }
-      opponentsBoard.board = newBoard;
-      return {
-        ...state,
-        [opponent]: {
-          ...state[opponent],
-          board: opponentsBoard,
-          sunkCount: count,
-        },
-      };
-    
-    
-    case "computerAttack": {
-      console.log('hi')
-      break;
-    }
-    case "updateShip": {
-      const { opponent, shipType, coordinates } = action.params;
-      const ship = Ship(shipType, [...coordinates])
-      const opponentsBoard = {...state[opponent].board};
-      const newBoard = [...opponentsBoard.board];
-      opponentsBoard.placeShip(ship)
-      
-      return {
-        ...state,
-        [opponent]: {
-          ...state[opponent],
-          board: opponentsBoard,
-          ships: {
-            ...state[opponent].ships,
-            shipType: ship,
-          }
-        }
-      }
-    }
-    case "message": {
-      const { message } = action;
-      console.log({...state, message,})
-      return {
-        ...state,
-        message,
-      }
-    }
-    case "test": {
-      const {coordinate } = action
-      const newState = {...state};
-      console.log('test card')
-      newState.computer.ships[0].hit(coordinate)
-      return {
-        ...state,
-        coomputer: {
-          ...state.computer,
-          ships: newState.computer.ships[0]
-        }
-      }
-    }
-    default:
-      console.log('hi')
-  }
-
-}
-
-const Game = () => {
-  /// okay joel for-real we have to figure out the refactor... ships into its own list or SOMETHING
-  // maybe a useEffect when gameboard changes that checks ship status?? or all in one HUGE STATE?? cry.. 
-  // the logic needs to be outside the reducer, then can pass in params -.-
-
-  const [ players, setPlayers ] = useReducer(
-    updatePlayerState,
-    {
-      human:
-        {
-          player: Player("Joel"),
-          board: Gameboard(),
-          ships: [],
-          sunkCount: 0,
-          // shipPlacement
-        },
-      computer:
-        {
-          player: Player("Bob"),
-          board: Gameboard(),
-          ships: [],
-          sunkCount: 0,
-        },
-      message: '',
-      winner: '',
-    }
-  );
-
-  const [ turn, setTurn ] = useState(0);
-
-  useEffect(() => {
-    // add ships on startup to get started
-    // setPlayers({id: 'updateBoard', params: {opponent: 'human'}})
-    // setPlayers({id: 'updateBoard', params: {opponent: 'computer'}})
-    setPlayers({id: 'updateShip', params: { opponent: 'human', shipType: 'Cruiser', coordinates: [0,1,2,3,4]}})
-    setPlayers({id: 'updateShip', params: { opponent: 'computer', shipType: 'Cruiser', coordinates: [0,1,2,3,4]}})
-  },[])
-
-  useEffect(() => {
-    if (turn < 1) return;
-    console.log('fired')
-    // const coordinate = players.computer.player.randomOpenSpot(players.human.board);
-    // setPlayers({id: 'attack', params: {coordinate, opponent: 'human'}})
-    const [isHit, coordinate ] = players.human.player.computerAttack(players.human.board)
-    if (isHit) {
-      console.log(isHit)
-      /// okay okay so the ATTACK doesn't do anything, its up to the HIT
-      // god it needs to be a refactor then. I hate having to mange this weird internal state
-      setPlayers({id: 'message', message: 'hit!'})
-      const isSunk = players.human.board.board[coordinate].ship.hit(coordinate)
-      if (isSunk) {
-        setPlayers({id: 'message', message: 'Sunk!'})
-      } else {
-        setPlayers({id: 'message', message: 'Miss!!'})
-      }
-      
-    }
-    // is just updating the board at this point
-    setPlayers({id: 'attack', params: {coordinate, opponent: 'human'}})
-
-
-  },[turn])
-
-  const attackCoordinate = (coordinate, board) => {
-    setPlayers({id: 'attack', params: {coordinate, opponent: 'computer'}})
-    setTurn(turn+1)
-  }
-
-  return (
-    <div>
-      <Board gameboard={players.human.board} clickable={false}/>
-      <Board gameboard={players.computer.board} attack={attackCoordinate}/>
-      <p>{players.message}</p>
-    </div>
-)
-}
 
 export default App;
