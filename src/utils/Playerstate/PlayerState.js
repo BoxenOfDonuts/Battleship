@@ -1,5 +1,5 @@
 import Gameboard from '../../factories/Gameboard/Gameboard';
-import Ship from '../../factories/Ship/Ship'
+import Ship from '../../factories/Ship/Ship';
 
 const updatePlayerStates = (state, action) => {
   switch (action.id) {
@@ -14,7 +14,6 @@ const updatePlayerStates = (state, action) => {
           health: coordinates.length,
         }
       }
-      console.log('ran again')
       const newBoard = Gameboard.placeShip(ship, state.players[action.player].board)
       return {
         ...state,
@@ -96,7 +95,25 @@ const updatePlayerStates = (state, action) => {
         }
       }
     }
-
+    case "UPDATE_REMAINING_SHIPS": {
+      const { player: opponent, value } = action;
+      return {
+        ...state,
+        players: {
+          ...state.players,
+          [opponent]:{
+            ...state.players[opponent],
+            remainingShips: state.players[opponent].remainingShips + value
+          }
+        }
+      };
+    }
+    case "UPDATE_WINNER": {
+      return {
+        ...state,
+        winner: action.winner
+      };
+    }
     default:
       console.log("BAD ACTION ID")
       console.error("BAD ACTION ID")
