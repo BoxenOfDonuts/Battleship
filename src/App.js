@@ -14,13 +14,13 @@ const Game = () => {
       players: {
         computer: {
           name: "HAL900",
-          board: [...Array(100).fill(null).map((value, index) =>({shot: false, ship: false}))],
+          board: Array(100).fill(null).map((value, index) =>({shot: false, ship: false})),
           ships: {
           },
         },
         human: {
           name: "Joel",
-          board: [...Array(100).fill(null).map((value, index) =>({shot: false, ship: false}))],
+          board: Array(100).fill(null).map((value, index) =>({shot: false, ship: false})),
           ships: {
           },
         },
