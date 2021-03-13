@@ -31,7 +31,7 @@ const Gameboard = (() => {
 
 
 
-  return {recieveAttack, placeShip}
+  return { placeShip }
 })();
 
 export default Gameboard;

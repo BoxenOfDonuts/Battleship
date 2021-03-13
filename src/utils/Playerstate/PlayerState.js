@@ -10,8 +10,8 @@ const updatePlayerStates = (state, action) => {
       const shipPlacement = {
         ...state.players[action.player].ships,
         [ship.data.name]: {
-          name: ship.data.name,
-          health: ship.getLength(),
+          name: name,
+          health: coordinates.length,
         }
       }
       console.log('ran again')
