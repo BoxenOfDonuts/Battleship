@@ -76,7 +76,6 @@ const updatePlayerStates = (state, action) => {
     case "SUNK_MESSAGE_SENT": {
       const { player: opponent, shipKey } = action;
       const ship = state.players[opponent].ships[shipKey];
-      console.log(ship)
       const newShips = {
         ...state.players[opponent].ships,
         [shipKey]: {
