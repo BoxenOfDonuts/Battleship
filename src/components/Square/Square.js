@@ -1,6 +1,6 @@
 import React from 'react';
 
-const Square = ({ clickable, attack, coordinate, position, ships }) => {
+const Square = ({ clickable, attack, coordinate, position, ships, hideShips }) => {
   // console.log()
   const {shot, ship} = position;
   let style = {}
@@ -12,7 +12,9 @@ const Square = ({ clickable, attack, coordinate, position, ships }) => {
       style['backgroundColor'] = 'white';
     }
   } else if (ship) {
-    style['backgroundColor'] = 'blue';
+    hideShips
+    ? style['backgroundColor'] = 'white'
+    : style['backgroundColor'] = 'blue';
     if (shot) {
       style['backgroundColor'] = 'red';
       if (ships[ship].isSunk) {

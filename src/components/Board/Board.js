@@ -15,6 +15,7 @@ const Board = (props) => {
         clickable={props.clickable}
         ships={props.ships}
         position={props.gameboard[boardIndex]}
+        hideShips={props.hideShips}
       />
     })
 
