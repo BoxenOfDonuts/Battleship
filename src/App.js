@@ -8,6 +8,8 @@ import { useState, useEffect, useReducer} from 'react';
 
 
 const Game = () => {
+  const [ turn, setTurn ] = useState(0);
+  const [ canClick, setCanClick ] = useState(true);
   const [ game, setGame ] = useReducer(
     updatePlayerStates,
     {
@@ -25,26 +27,42 @@ const Game = () => {
           remainingShips: 0,
         },
       },
-      message: '',
+      message: 'Click on your opponents board to begin!',
       winner: '',
     }
   )
-  const [ turn, setTurn ] = useState(0);
-  const [ canClick, setCanClick ] = useState(true);
 
-  const attackCoordinate = async (coordinate) => {
-    if (game.winner) {
-      setCanClick(false);
-      return;
-    };
-    setGame({id: "ATTACK_SQUARE", coordinate, opponent: 'computer'})
+  const shipSank = (player, ship) => {
+    const message = player === 'computer'
+      ? `Sank enemy ${ship}`
+      : `They sank my ${ship}`;
+    setGame({id: "UPDATE_REMAINING_SHIPS", player, value: -1})
+    setGame({id: "SEND_MESSAGE", message})
+    setGame({id: "SUNK_MESSAGE_SENT", player, shipKey: ship})
+  }
+
+  const attackCoordinate = (opponent, coordinate)=> {
+    const message = opponent === 'computer'
+      ? "Hit Enemy Ship!"
+      : "Enemy hit my Ship!";
+
+    setGame({id: "ATTACK_SQUARE", coordinate, opponent})
     if (game.players.computer.board[coordinate].ship) {
-      setGame({id: "SEND_MESSAGE", message: "Hit Enemy Ship!"})
-      setGame({id: "ATTACK_SHIP", coordinate, opponent: 'computer'})
+      setGame({id: "SEND_MESSAGE", message})
+      setGame({id: "ATTACK_SHIP", coordinate, opponent})
     } else {
       setGame({id: "SEND_MESSAGE", message: "Miss!"})
     }
+  }
+
+  const handleBoardClick = (coordinate) => {
+    if (game.winner) return;
+    attackCoordinate('computer', coordinate);
     setCanClick(false);
+    setTimeout(() => {
+      setCanClick(true);
+      setTurn((turn) =>turn+1);
+    }, 1000)
   }
   
   useEffect(() => {
@@ -65,16 +83,14 @@ const Game = () => {
     setGame({id: "PLACE_SHIP", player: 'human', name: 'Submarine', coordinates: [64,65,66]})
     setGame({id: "PLACE_SHIP", player: 'human', name: 'Patrol Boat', coordinates: [22,23]})
     setGame({id: 'UPDATE_REMAINING_SHIPS', player: 'human', value: 5})
-
   },[])
   
   useEffect(() => {
+    console.log('fired twice')
     for (let shipKey in game.players.computer.ships) {
       const ship = game.players.computer.ships[shipKey]
       if (ship.isSunk && !ship.messageSent) {
-        setGame({id: "UPDATE_REMAINING_SHIPS", player: 'computer', value: -1})
-        setGame({id: "SEND_MESSAGE", message: `Sunk enemy ${shipKey}`})
-        setGame({id: "SUNK_MESSAGE_SENT", player: 'computer', shipKey})
+        shipSank('computer', shipKey);
       }
     }
   },[game.players.computer.ships])
@@ -83,40 +99,22 @@ const Game = () => {
     for (let shipKey in game.players.human.ships) {
       const ship = game.players.human.ships[shipKey]
       if (ship.isSunk && !ship.messageSent) {
-        setGame({id: "UPDATE_REMAINING_SHIPS", player: 'human', value: -1})
-        setGame({id: "SEND_MESSAGE", message: `They Sunk my ${shipKey}`})
-        setGame({id: "SUNK_MESSAGE_SENT", player: 'human', shipKey})
+        shipSank('human', shipKey);
       }
     }
   },[game.players.human.ships])
-  
-  useEffect(() => {
-    if (canClick || game.winner) return;
-    setTimeout(() => {
-      setCanClick(true);
-      setTurn((turn) =>turn+1);
-    }, 1000)
-
-  },[canClick])
 
   useEffect(() => {
     if (turn < 1 || game.winner) return;
     const p = Player()
     const coordinate = p.randomOpenSpot(game.players.human.board)
-    setGame({id: "ATTACK_SQUARE", coordinate, opponent: 'human'})
-    if (game.players.human.board[coordinate].ship) {
-      setGame({id: "SEND_MESSAGE", message: "Enemy hit my Ship!"})
-      setGame({id: "ATTACK_SHIP", coordinate, opponent: 'human'})
-    } else {
-      setGame({id: "SEND_MESSAGE", message: "Miss!"})
-    }
+    attackCoordinate('human', coordinate)
   },[turn])
 
   useEffect(() => {
     if (turn < 1 || game.winner) return;
     const { remainingShips:remainingComputerShips } = game.players.computer;
     const { remainingShips:remainingHumanShips } = game.players.human;
-    console.log(remainingComputerShips, remainingHumanShips)
     if (remainingComputerShips === 0 || remainingHumanShips === 0) {
       const winner = remainingComputerShips ? 'computer': 'human';
       setGame({id: 'UPDATE_WINNER', winner})
@@ -136,9 +134,10 @@ const Game = () => {
       />
       <Board
           gameboard={game.players.computer.board}
-          attack={attackCoordinate}
+          attack={handleBoardClick}
           ships={game.players.computer.ships}
           clickable={canClick}
+          hideShips={true}
       />
     </div>
     );
