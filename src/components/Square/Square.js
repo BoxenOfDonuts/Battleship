@@ -1,6 +1,6 @@
 import React from 'react';
 
-const Square = ({ clickable, attack, coordinate, position, ships, hideShips }) => {
+const Square = ({ clickable, handleClick, coordinate, position, ships, hideShips }) => {
   // console.log()
   const {shot, ship} = position;
   let style = {}
@@ -31,8 +31,7 @@ const Square = ({ clickable, attack, coordinate, position, ships, hideShips }) =
     <button
       className="square"
       style={style}
-      // onClick={() => console.log(position)}
-      onClick={() => attack(coordinate)}
+      onClick={() => handleClick(coordinate)}
     >
     </button>
   )

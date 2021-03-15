@@ -11,7 +11,7 @@ const Board = (props) => {
       return <Square 
         key={boardIndex}
         coordinate={boardIndex}
-        attack={props.attack}
+        handleClick={props.onClick}
         clickable={props.clickable}
         ships={props.ships}
         position={props.gameboard[boardIndex]}

@@ -113,6 +113,12 @@ const updatePlayerStates = (state, action) => {
         winner: action.winner
       };
     }
+    case "GAME_START": {
+      return {
+        ...state,
+        started: action.started
+      } 
+    }
     default:
       console.log("BAD ACTION ID")
       console.error("BAD ACTION ID")

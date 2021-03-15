@@ -1,18 +1,23 @@
 const ShipTypes = [
-  {'Carrier': 
-    {length: 5, numberOf: 1}
+  {
+    name: 'Carrier',
+    length: 5,
   },
-  {'Battleship':
-    {length: 5, numberOf: 2}
+  {
+    name: 'Battleship',
+    length: 4,
   },
-  {'Destroyer': 
-    {length: 5, numberOf: 3}
+  {
+    name: 'Destroyer',
+    length: 3,
   },
-  {'Submarine':
-    {length: 5, numberOf: 4}
+  {
+    name: 'Submarine',
+    length: 3,
   },
-  {'Patrol Boat':
-    {length: 2, numberOf: 5}
+  {
+    name: 'Patrol Boat',
+    length: 2,
   },
 ]
 

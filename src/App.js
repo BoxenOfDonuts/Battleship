@@ -3,6 +3,7 @@ import ShipTypes from './factories/Ship/ShipTypes';
 import updatePlayerStates from './utils/Playerstate/PlayerState'
 import Board from './components/Board/Board';
 import Player from './factories/Player/Player'
+import Gameboard from './factories/Gameboard/Gameboard';
 import { useState, useEffect, useReducer} from 'react';
 
 
@@ -10,6 +11,7 @@ import { useState, useEffect, useReducer} from 'react';
 const Game = () => {
   const [ turn, setTurn ] = useState(0);
   const [ canClick, setCanClick ] = useState(true);
+  const [ inventory, setInventory ] = useState(ShipTypes);
   const [ game, setGame ] = useReducer(
     updatePlayerStates,
     {
@@ -29,6 +31,7 @@ const Game = () => {
       },
       message: 'Click on your opponents board to begin!',
       winner: '',
+      started: false,
     }
   )
 
@@ -47,7 +50,7 @@ const Game = () => {
       : "Enemy hit my Ship!";
 
     setGame({id: "ATTACK_SQUARE", coordinate, opponent})
-    if (game.players.computer.board[coordinate].ship) {
+    if (game.players[opponent].board[coordinate].ship) {
       setGame({id: "SEND_MESSAGE", message})
       setGame({id: "ATTACK_SHIP", coordinate, opponent})
     } else {
@@ -64,6 +67,24 @@ const Game = () => {
       setTurn((turn) =>turn+1);
     }, 1000)
   }
+
+  const placeShips = (coordinate) => {
+    if (game.started) return;
+    const newInventory = inventory.slice(1, inventory.length);
+    const ship = inventory[0];
+    const coordinates = [coordinate];
+    for (let i = 1; i < ship.length; i++) {
+      coordinates.push(coordinate + i)
+    }
+    if (!Gameboard.validPlacement(coordinates, [])) return;
+    setInventory(newInventory)
+    setGame({id: "PLACE_SHIP", player: 'human', name: ship.name, coordinates})
+    setGame({id: 'UPDATE_REMAINING_SHIPS', player: 'human', value: 1})
+    if (newInventory.length === 0) {
+      setGame({id: 'GAME_START', started: true})
+      setGame({id: "SEND_MESSAGE", message: 'Game Start!'})
+    }
+  }
   
   useEffect(() => {
     // just so it doesn't replace them everytime it re-compiles
@@ -75,18 +96,9 @@ const Game = () => {
     setGame({id: "PLACE_SHIP", player: 'computer', name: 'Patrol Boat', coordinates: [22,23]})
     // should increment on each ship not sure if in own switch or together but hacked together for testing now
     setGame({id: 'UPDATE_REMAINING_SHIPS', player: 'computer', value: 5})
-
-
-    setGame({id: "PLACE_SHIP", player: 'human', name: 'Carrier', coordinates: [0,1,2,3,4]})
-    setGame({id: "PLACE_SHIP", player: 'human', name: 'Battleship', coordinates: [42,43,44,45]})
-    setGame({id: "PLACE_SHIP", player: 'human', name: 'Destoyer', coordinates: [96,97,98]})
-    setGame({id: "PLACE_SHIP", player: 'human', name: 'Submarine', coordinates: [64,65,66]})
-    setGame({id: "PLACE_SHIP", player: 'human', name: 'Patrol Boat', coordinates: [22,23]})
-    setGame({id: 'UPDATE_REMAINING_SHIPS', player: 'human', value: 5})
   },[])
   
   useEffect(() => {
-    console.log('fired twice')
     for (let shipKey in game.players.computer.ships) {
       const ship = game.players.computer.ships[shipKey]
       if (ship.isSunk && !ship.messageSent) {
@@ -105,7 +117,8 @@ const Game = () => {
   },[game.players.human.ships])
 
   useEffect(() => {
-    if (turn < 1 || game.winner) return;
+    // set turn to 1 to start? or have stages idk
+    if (!game.started|| game.winner) return;
     const p = Player()
     const coordinate = p.randomOpenSpot(game.players.human.board)
     attackCoordinate('human', coordinate)
@@ -130,14 +143,15 @@ const Game = () => {
       <Board
           gameboard={game.players.human.board}
           ships={game.players.human.ships}
-          clickable={false}
+          clickable={!game.started}
+          onClick={placeShips}
       />
       <Board
           gameboard={game.players.computer.board}
-          attack={handleBoardClick}
+          onClick={handleBoardClick}
           ships={game.players.computer.ships}
-          clickable={canClick}
-          hideShips={true}
+          clickable={game.started && canClick}
+          hideShips={false}
       />
     </div>
     );

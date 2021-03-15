@@ -4,9 +4,10 @@ import Ship from '../Ship/Ship';
 describe('Test Suite for Gameboard', () => {
   // let gameboard = Gameboard();
   const board = Array(100).fill(null).map((value, index) =>({shot: false, ship: false}));
-
+  const ship = Ship('Patrol Boat', [0,1]);
   beforeEach(() => {
     const board = Array(100).fill(null).map((value, index) =>({shot: false, ship: false}));
+    const ship = Ship('Patrol Boat', [0,1]);
     // gameboard = Gameboard();
   })
   
@@ -23,19 +24,26 @@ describe('Test Suite for Gameboard', () => {
   // })
   it('Places a ship on the board', () => {
     // should it be a method? I dunno. but probably?
-    const ship = Ship('Patrol Boat', [0,1]);
     const newBoard = Gameboard.placeShip(ship, board)
     expect(newBoard[0]).toEqual({shot: false, ship: 'Patrol Boat'})
     expect(newBoard[1]).toEqual({shot: false, ship: 'Patrol Boat'})
     expect(newBoard[2]).toEqual({shot: false, ship: false})
   })
   it("Placing ship doesn't accidentally mutate the board", ()=> {
-    const ship = Ship('Patrol Boat', [0,1]);
     const boardCopy = [...board];
     const newBoard = Gameboard.placeShip(ship, board);
     expect(newBoard[0]).toEqual({shot: false, ship: 'Patrol Boat'});
     expect(board[0]).toEqual({shot: false, ship: false});
     expect(board).toEqual(boardCopy);
+  })
+  it('Returns false for invalid placements', () => {
+    const newBoard = [...board];
+    const goodPositions = [8 ,9];
+    const badPositions = [9, 10];
+    const longBadPositions = [8, 9, 10, 11, 12];
+    expect(Gameboard.validPlacement(goodPositions, newBoard)).toBe(true);
+    expect(Gameboard.validPlacement(badPositions, newBoard)).toBe(false);
+    expect(Gameboard.validPlacement(longBadPositions, newBoard)).toBe(false)
   })
   // it('can place multiple ships on the board', () => {
   //   // should it be a method? I dunno. but probably?    
