@@ -23,21 +23,25 @@ const Gameboard = (() => {
       return false;
     }
     // for too close to another ship 
-    const goodPositions = board.filter((position, index) => {
-      if (position.ship) return false;
-      return true
+    const badBositions = [];
+    board.forEach((value, index) => {
+      if (value.ship) {
+        badBositions.push(index, index-10, index+10);
+        if (!(index % 10 === 9)) {
+          badBositions.push(index+1, index+11, index-9)
+        }
+        if (!(index % 10 === 0)) {
+          badBositions.push(index-1, index-11, index-9)
+        }
+      }
     })
-    // let openSpots = [];
-    // for (let index in opponentsGameboard) {
-    //   if(!opponentsGameboard[index].shot) {
-    //     openSpots.push(Number(index))
-    //   }
-    // }
-    // const randomIndex = Math.floor(Math.random() * openSpots.length);
-    // const randomAttack = openSpots[randomIndex];
-      // return randomAttack;
 
-
+    console.log(badBositions);
+    for (const value of coordinates) {
+      if (badBositions.includes(value)) {
+        return false;
+      }
+    }
 
     return true;
   }

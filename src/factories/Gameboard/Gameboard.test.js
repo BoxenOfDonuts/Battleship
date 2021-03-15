@@ -36,7 +36,7 @@ describe('Test Suite for Gameboard', () => {
     expect(board[0]).toEqual({shot: false, ship: false});
     expect(board).toEqual(boardCopy);
   })
-  it('Returns false for invalid placements', () => {
+  it('Returns false if it does not fit on the board', () => {
     const newBoard = [...board];
     const goodPositions = [8 ,9];
     const badPositions = [9, 10];
@@ -44,6 +44,31 @@ describe('Test Suite for Gameboard', () => {
     expect(Gameboard.validPlacement(goodPositions, newBoard)).toBe(true);
     expect(Gameboard.validPlacement(badPositions, newBoard)).toBe(false);
     expect(Gameboard.validPlacement(longBadPositions, newBoard)).toBe(false)
+  })
+  it('returns false if it is too close to another ship', () => {
+    const newBoard = [...board];
+    newBoard[18].ship = true;
+    newBoard[19].ship = true;
+    // before
+    expect(Gameboard.validPlacement([16,17], newBoard)).toBe(false);
+    // of
+    expect(Gameboard.validPlacement([18,19], newBoard)).toBe(false);
+    // above
+    expect(Gameboard.validPlacement([27,28,29], newBoard)).toBe(false);
+    // below
+    expect(Gameboard.validPlacement([7,8,9], newBoard)).toBe(false);
+    // wrap around
+    expect(Gameboard.validPlacement([20], newBoard)).toBe(true);
+    newBoard[40].ship = true;
+    newBoard[41].ship = true;
+    // after
+    expect(Gameboard.validPlacement([42], newBoard)).toBe(false);
+    // wrap the other way
+    expect(Gameboard.validPlacement([38,39], newBoard)).toBe(true);
+    // good values
+    expect(Gameboard.validPlacement([43,44], newBoard)).toBe(true);
+    expect(Gameboard.validPlacement([48,49], newBoard)).toBe(true);
+
   })
   // it('can place multiple ships on the board', () => {
   //   // should it be a method? I dunno. but probably?    
