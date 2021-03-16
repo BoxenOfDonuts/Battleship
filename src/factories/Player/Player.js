@@ -1,3 +1,4 @@
+import ShipTypes from '../Ship/ShipTypes';
 
 const attackOpponent = () => ({
   attack: (opponentsGameboard, coordinate) => {
@@ -46,7 +47,7 @@ const Player = (name) => {
   return {
     data,
     ...attackOpponent(),
-    ...computerAttackOpponent()
+    ...computerAttackOpponent(),
   }
 }
 
