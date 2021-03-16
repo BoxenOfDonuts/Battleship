@@ -12,6 +12,13 @@ const Game = () => {
   const [ turn, setTurn ] = useState(0);
   const [ canClick, setCanClick ] = useState(true);
   const [ inventory, setInventory ] = useState(ShipTypes);
+  const [ lastAttempt, setLastAttempt ] = useState(
+    {
+      hit: false,
+      positions: [],
+      direction: -1
+    }
+  );
   const [ game, setGame ] = useReducer(
     updatePlayerStates,
     {
@@ -29,12 +36,14 @@ const Game = () => {
           remainingShips: 0,
         },
       },
-      message: 'Click on your opponents board to begin!',
+      message: 'Click on the board to place your ship',
       winner: '',
       started: false,
     }
-  )
+  );
 
+  console.log('rendering');
+  
   const shipSank = (player, ship) => {
     const message = player === 'computer'
       ? `Sank enemy ${ship}`
@@ -51,10 +60,22 @@ const Game = () => {
 
     setGame({id: "ATTACK_SQUARE", coordinate, opponent})
     if (game.players[opponent].board[coordinate].ship) {
+      if (opponent === 'human') {
+        const positions = lastAttempt.positions;
+        if (lastAttempt.direction === -1) {
+          positions.unshift(coordinate)
+        } else {
+          positions.unshift(coordinate)
+        }
+        setLastAttempt({...lastAttempt, hit: true, positions,})
+      }
       setGame({id: "SEND_MESSAGE", message})
       setGame({id: "ATTACK_SHIP", coordinate, opponent})
     } else {
       setGame({id: "SEND_MESSAGE", message: "Miss!"})
+      if (opponent === 'human') {
+        setLastAttempt({...lastAttempt, hit: false})
+      }
     }
   }
 
@@ -87,7 +108,8 @@ const Game = () => {
   }
   
   useEffect(() => {
-    if (inventory.length === 0) return;
+    // pass in previous state and can do it in a loop
+    if (inventory.length === 5 || inventory.length === 0) return;
     const ship = inventory[0];
     const coordinates = Gameboard.randomCoordinates(ship, game.players.computer.board);
     setGame({id: "PLACE_SHIP", player: 'computer', name: ship.name, coordinates})
@@ -108,6 +130,7 @@ const Game = () => {
       const ship = game.players.human.ships[shipKey]
       if (ship.isSunk && !ship.messageSent) {
         shipSank('human', shipKey);
+        setLastAttempt({hit: false, positions: [], direction: -1, sunk:null})
       }
     }
   },[game.players.human.ships])
@@ -115,9 +138,24 @@ const Game = () => {
   useEffect(() => {
     // set turn to 1 to start? or have stages idk
     if (!game.started|| game.winner) return;
-    const p = Player()
-    const coordinate = p.randomOpenSpot(game.players.human.board)
-    attackCoordinate('human', coordinate)
+    // check if last hit a ship if not random, if so use 'memory'
+    // I guess need to put this into a gameboard object?
+    if (lastAttempt.hit && lastAttempt.positions[0] !== 0 && Gameboard.isValid(game.players.human.board, lastAttempt.positions[0], lastAttempt.direction)) {
+      let coordinate = lastAttempt.positions[0];
+      coordinate = coordinate + lastAttempt.direction;
+      console.log(`last attempt hit, trying ${coordinate}`)
+      attackCoordinate('human', coordinate)
+    } else if (lastAttempt.positions.length > 0) {
+      let coordinate = lastAttempt.positions[lastAttempt.positions.length -1];
+      coordinate = coordinate + 1;
+      console.log(`last attemp missed, trying the other way... ${coordinate}`);
+      attackCoordinate('human', coordinate)
+      setLastAttempt((prevState) => ({...prevState, direction: 1}))
+    } else {
+      const p = Player()
+      const coordinate = p.randomOpenSpot(game.players.human.board)
+      attackCoordinate('human', coordinate)
+    }
   },[turn])
 
   useEffect(() => {
@@ -142,13 +180,13 @@ const Game = () => {
           clickable={!game.started}
           onClick={placeShips}
       />
-      <Board
+      {game.started && <Board
           gameboard={game.players.computer.board}
           onClick={handleBoardClick}
           ships={game.players.computer.ships}
           clickable={game.started && canClick}
-          hideShips={true}
-      />
+          hideShips={false}
+      />}
     </div>
     );
 }

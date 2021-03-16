@@ -54,12 +54,21 @@ const Gameboard = (() => {
     let coordinates = randomSpots(shipType);
     while(!validPlacement(coordinates, board)) {
         coordinates = randomSpots(shipType);
+        console.log('this shouldnt go a lot')
     }
 
     return coordinates;
   }
 
-  return { placeShip, validPlacement, randomCoordinates }
+  const isValid = (board, position, direction) => {
+    console.log(board[position + direction])
+    if (board[position + direction].shot) {
+      return false
+    }
+    return true;
+  }
+
+  return { placeShip, validPlacement, randomCoordinates, isValid }
 })();
 
 export default Gameboard;
