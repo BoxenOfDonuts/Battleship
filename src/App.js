@@ -65,7 +65,7 @@ const Game = () => {
     setTimeout(() => {
       setCanClick(true);
       setTurn((turn) =>turn+1);
-    }, 1000)
+    }, 1)
   }
 
   const placeShips = (coordinate) => {
@@ -76,7 +76,7 @@ const Game = () => {
     for (let i = 1; i < ship.length; i++) {
       coordinates.push(coordinate + i)
     }
-    if (!Gameboard.validPlacement(coordinates, [])) return;
+    if (!Gameboard.validPlacement(coordinates, game.players.human.board)) return;
     setInventory(newInventory)
     setGame({id: "PLACE_SHIP", player: 'human', name: ship.name, coordinates})
     setGame({id: 'UPDATE_REMAINING_SHIPS', player: 'human', value: 1})
@@ -87,16 +87,12 @@ const Game = () => {
   }
   
   useEffect(() => {
-    // just so it doesn't replace them everytime it re-compiles
-    if (game.players.computer.board[0].ship !== false) return;
-    setGame({id: "PLACE_SHIP", player: 'computer', name: 'Carrier', coordinates: [0,1,2,3,4]})
-    setGame({id: "PLACE_SHIP", player: 'computer', name: 'Battleship', coordinates: [42,43,44,45]})
-    setGame({id: "PLACE_SHIP", player: 'computer', name: 'Destoyer', coordinates: [96,97,98]})
-    setGame({id: "PLACE_SHIP", player: 'computer', name: 'Submarine', coordinates: [64,65,66]})
-    setGame({id: "PLACE_SHIP", player: 'computer', name: 'Patrol Boat', coordinates: [22,23]})
-    // should increment on each ship not sure if in own switch or together but hacked together for testing now
-    setGame({id: 'UPDATE_REMAINING_SHIPS', player: 'computer', value: 5})
-  },[])
+    if (inventory.length === 0) return;
+    const ship = inventory[0];
+    const coordinates = Gameboard.randomCoordinates(ship, game.players.computer.board);
+    setGame({id: "PLACE_SHIP", player: 'computer', name: ship.name, coordinates})
+    setGame({id: 'UPDATE_REMAINING_SHIPS', player: 'computer', value: 1})
+  },[inventory])
   
   useEffect(() => {
     for (let shipKey in game.players.computer.ships) {
@@ -151,7 +147,7 @@ const Game = () => {
           onClick={handleBoardClick}
           ships={game.players.computer.ships}
           clickable={game.started && canClick}
-          hideShips={false}
+          hideShips={true}
       />
     </div>
     );

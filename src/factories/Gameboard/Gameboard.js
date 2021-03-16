@@ -1,3 +1,6 @@
+import ShipTypes from '../Ship/ShipTypes';
+import Ship from '../Ship/Ship'
+
 const Gameboard = (() => {
   const placeShip = (ship, board) => {
     
@@ -8,11 +11,6 @@ const Gameboard = (() => {
     }
     return newBoard;
 
-    // mutates the board
-    // for (let position of ship.data.positions) {
-    //   board[position].ship = ship.data.name;
-    // }
-    // return board;
   }
 
   const validPlacement = (coordinates, board) => {
@@ -23,46 +21,45 @@ const Gameboard = (() => {
       return false;
     }
     // for too close to another ship 
-    const badBositions = [];
+    const badPositions = [];
     board.forEach((value, index) => {
       if (value.ship) {
-        badBositions.push(index, index-10, index+10);
+        badPositions.push(index, index-10, index+10);
         if (!(index % 10 === 9)) {
-          badBositions.push(index+1, index+11, index-9)
+          badPositions.push(index+1, index+11, index-9)
         }
         if (!(index % 10 === 0)) {
-          badBositions.push(index-1, index-11, index-9)
+          badPositions.push(index-1, index-11, index+9)
         }
       }
     })
 
-    console.log(badBositions);
     for (const value of coordinates) {
-      if (badBositions.includes(value)) {
+      if (badPositions.includes(value)) {
         return false;
       }
     }
-
     return true;
   }
 
-  const recieveAttack = (position, board) => {
-    const newBoard = [...board]
-    newBoard[position].shot = true;
-  //   return board[position].ship
-  //     ? true
-  //     : false;
-    // console.log(board[position].ship)
-
-    return {
-      board: newBoard,
-      isShip: board[position].ship
+  const randomCoordinates = (shipType, board) => {
+    const randomSpots = (shipType) => {
+      const coordinate = Math.floor(Math.random() * 98)
+      const coordinates = [coordinate];
+      for (let i = 1; i < shipType.length; i++) {
+        coordinates.push(coordinate + i);
+      }
+      return coordinates;
     }
+    let coordinates = randomSpots(shipType);
+    while(!validPlacement(coordinates, board)) {
+        coordinates = randomSpots(shipType);
+    }
+
+    return coordinates;
   }
 
-
-
-  return { placeShip, validPlacement }
+  return { placeShip, validPlacement, randomCoordinates }
 })();
 
 export default Gameboard;
