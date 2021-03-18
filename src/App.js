@@ -41,8 +41,6 @@ const Game = () => {
       started: false,
     }
   );
-
-  console.log('rendering');
   
   const shipSank = (player, ship) => {
     const message = player === 'computer'
@@ -109,7 +107,7 @@ const Game = () => {
   
   useEffect(() => {
     // pass in previous state and can do it in a loop
-    if (inventory.length === 5 || inventory.length === 0) return;
+    if (game.started || inventory.length === 0) return;
     const ship = inventory[0];
     const coordinates = Gameboard.randomCoordinates(ship, game.players.computer.board);
     setGame({id: "PLACE_SHIP", player: 'computer', name: ship.name, coordinates})
@@ -172,21 +170,23 @@ const Game = () => {
 
   
   return (
-    <div>
+    <div className="game">
       <p>{game.message}</p>
-      <Board
-          gameboard={game.players.human.board}
-          ships={game.players.human.ships}
-          clickable={!game.started}
-          onClick={placeShips}
-      />
-      {game.started && <Board
-          gameboard={game.players.computer.board}
-          onClick={handleBoardClick}
-          ships={game.players.computer.ships}
-          clickable={game.started && canClick}
-          hideShips={false}
-      />}
+      <div className="gameboard">
+        <Board
+            gameboard={game.players.human.board}
+            ships={game.players.human.ships}
+            clickable={!game.started}
+            onClick={placeShips}
+        />
+        {game.started && <Board
+            gameboard={game.players.computer.board}
+            onClick={handleBoardClick}
+            ships={game.players.computer.ships}
+            clickable={game.started && canClick}
+            hideShips={false}
+        />}
+      </div>
     </div>
     );
 }
