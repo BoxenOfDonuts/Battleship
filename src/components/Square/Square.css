@@ -1,0 +1,32 @@
+.ship {
+  background-color: var(--ship-color);
+  border-left: 1px solid var(--ship-color);
+  border-right: 1px solid var(--ship-color);
+  border-bottom: 1px solid black;
+  border-top: 1px solid black;
+}
+
+.ship.hidden {
+  background-color: white;
+}
+
+.square.miss {
+  background-color: grey;
+}
+
+.ship.hit {
+  background-color: red;
+}
+
+.ship.sunk {
+  background-color: var(--sunk-color);
+  border: 1px solid var(--sunk-color);
+}
+
+.right-edge {
+  border-right: 1px solid black;
+}
+
+.left-edge {
+  border-left: 1px solid black;
+}

@@ -1,3 +1,20 @@
+* {
+  margin: 0;
+  padding: 0;
+
+}
+
+:root {
+  --ship-color: #8b949e;
+  --sunk-color: #282c34;
+  --bg-color:#607D8B;
+  --board-color: #49cad7;
+}
+
+html {
+  background-color: var(--bg-color);
+}
+
 .App {
   text-align: center;
 }
@@ -7,13 +24,33 @@
   pointer-events: none;
 }
 
-button {
-  padding: 15px;
+.board .board-row {
+  display: flex;
+  flex-direction: row;
+}
+
+.square {
+  width: 40px;
+  height: 40px;
+  border: 1px solid black;
+}
+
+.gameboard {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+
+.gameboard .board {
+  margin-left: 20px;
+  margin-right: 20px;
+  background-color: #49cad7;
 }
 
 div.board {
-  margin-top:  20px;
+  border: 1px solid black;
 }
+
 
 @media (prefers-reduced-motion: no-preference) {
   .App-logo {

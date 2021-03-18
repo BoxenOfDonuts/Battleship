@@ -1,39 +1,46 @@
 import React from 'react';
+import './Square.css'
 
-const Square = ({ clickable, handleClick, coordinate, position, ships, hideShips }) => {
-  // console.log()
+const Square = ({ handleClick, coordinate, position, ships, hideShips }) => {
   const {shot, ship} = position;
-  let style = {}
+  let classname = 'square';
+  let marker = '';
 
-  if (!ship) {
-    if(shot) {
-      style['backgroundColor'] = 'gray';
-    } else {
-      style['backgroundColor'] = 'white';
-    }
+  const hitShot = <svg height="40" width="40">
+    <circle cx="20" cy="20" r="12" stroke="black" stroke-width="1" fill="red" />
+    </svg>
+  
+  const missedShot = <svg height="40" width="40">
+    <circle cx="20" cy="20" r="12" stroke="black" stroke-width="1" fill="white" />
+    </svg>
+
+  if (!ship && shot) {
+    // classname += ' miss';
+    marker = missedShot;
   } else if (ship) {
-    hideShips
-    ? style['backgroundColor'] = 'white'
-    : style['backgroundColor'] = 'blue';
+    hideShips && !shot
+    ? classname += ' hidden'
+    : classname += ' ship';
     if (shot) {
-      style['backgroundColor'] = 'red';
+      // classname += ' hit';
+      marker = hitShot;
       if (ships[ship].isSunk) {
-        style['backgroundColor'] = 'black';
+        classname += ' sunk';
       }
     }
+    if (coordinate === ships[ship].leftEdge) {
+      classname += ' left-edge'
+    } else if (coordinate === ships[ship].rightEdge) {
+      classname += ' right-edge';
+    }
   }
 
-  if (clickable ===false || shot) {
-    style['pointerEvents'] = 'none';
-  }
-  
   return (
-    <button
-      className="square"
-      style={style}
+    <div
+      className={classname}
       onClick={() => handleClick(coordinate)}
-    >
-    </button>
+    >{marker}
+    </div>
   )
 }
 

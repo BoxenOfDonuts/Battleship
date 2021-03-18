@@ -12,6 +12,8 @@ const updatePlayerStates = (state, action) => {
         [ship.data.name]: {
           name: name,
           health: coordinates.length,
+          leftEdge: coordinates[0],
+          rightEdge: coordinates[coordinates.length -1],
         }
       }
       const newBoard = Gameboard.placeShip(ship, state.players[action.player].board)
