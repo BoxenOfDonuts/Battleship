@@ -138,7 +138,7 @@ const Game = () => {
     if (!game.started|| game.winner) return;
     // check if last hit a ship if not random, if so use 'memory'
     // I guess need to put this into a gameboard object?
-    if (lastAttempt.hit && lastAttempt.positions[0] !== 0 && Gameboard.isValid(game.players.human.board, lastAttempt.positions[0], lastAttempt.direction)) {
+    if (lastAttempt.hit && lastAttempt.positions[0] % 10 !== 0 && Gameboard.isValid(game.players.human.board, lastAttempt.positions[0], lastAttempt.direction)) {
       let coordinate = lastAttempt.positions[0];
       coordinate = coordinate + lastAttempt.direction;
       console.log(`last attempt hit, trying ${coordinate}`)
