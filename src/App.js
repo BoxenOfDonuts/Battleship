@@ -78,7 +78,7 @@ const Game = () => {
   }
 
   const handleBoardClick = (coordinate) => {
-    if (game.winner) return;
+    if (game.winner || game.players.computer.board[coordinate].shot) return;
     attackCoordinate('computer', coordinate);
     setCanClick(false);
     setTimeout(() => {
