@@ -1,4 +1,4 @@
-.ship {
+.square.ship {
   background-color: var(--ship-color);
   border-left: 1px solid var(--ship-color);
   border-right: 1px solid var(--ship-color);
@@ -23,11 +23,11 @@
   border: 1px solid var(--sunk-color);
 }
 
-.right-edge {
+.ship.right-edge {
   border-right: 1px solid black;
 }
 
-.left-edge {
+.ship.left-edge {
   border-left: 1px solid black;
 }
 
@@ -47,5 +47,11 @@
     width: 30px;
     height: 30px;
     border: 1px solid black;
+  }
+
+  circle {
+    cx: 15;
+    cy: 15;
+    r: 10;
   }
 }

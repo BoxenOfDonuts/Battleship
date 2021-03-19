@@ -3,7 +3,6 @@ import './Square.css';
 
 const Square = ({ handleClick, coordinate, position, ships, hideShips }) => {
   const {shot, ship} = position;
-  const { innerWidth: width, innerHeight: height } = window;
   let classname = 'square';
   let marker = '';
 
