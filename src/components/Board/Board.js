@@ -2,13 +2,19 @@ import { memo } from 'react';
 import Square from '../Square/Square';
 
 const Board = (props) => {
+  let classname = 'board';
+
+  classname += props.clickable
+    ? ''
+    : ' no-click';
+
   const renderRow = (index) => {
     const start = index * 10;
     const rows = Array(10)
     .fill(null)
     .map((value, columnIndex) => {
       const boardIndex = start+columnIndex;
-      return <Square 
+      return <Square
         key={boardIndex}
         coordinate={boardIndex}
         handleClick={props.onClick}
@@ -30,8 +36,7 @@ const Board = (props) => {
   }
 
   return (
-    <div className="board">
-      {/* {columns.map((value, index) => renderRow(value, index))} */}
+    <div className={classname}>
       {Array(10).fill(null).map((value, index) => renderRow(index))}
     </div>
   );

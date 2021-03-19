@@ -1,9 +1,11 @@
 import './App.css';
 import ShipTypes from './factories/Ship/ShipTypes';
-import updatePlayerStates from './utils/Playerstate/PlayerState'
 import Board from './components/Board/Board';
 import Player from './factories/Player/Player'
 import Gameboard from './factories/Gameboard/Gameboard';
+import Header from './components/Header/Header';
+import MessageBoard from './components/Messageboard/MessageBoard';
+import { updatePlayerStates, init } from './utils/Playerstate/PlayerState';
 import { useState, useEffect, useReducer} from 'react';
 
 
@@ -21,25 +23,8 @@ const Game = () => {
   );
   const [ game, setGame ] = useReducer(
     updatePlayerStates,
-    {
-      players: {
-        computer: {
-          name: "HAL900",
-          board: Array(100).fill(null).map((value, index) =>({shot: false, ship: false})),
-          ships: {},
-          remainingShips: 0,
-        },
-        human: {
-          name: "Joel",
-          board: Array(100).fill(null).map((value, index) =>({shot: false, ship: false})),
-          ships: {},
-          remainingShips: 0,
-        },
-      },
-      message: 'Click on the board to place your ship',
-      winner: '',
-      started: false,
-    }
+    init(),
+    init
   );
   
   const shipSank = (player, ship) => {
@@ -77,6 +62,20 @@ const Game = () => {
     }
   }
 
+  const resetGame = () => {
+    setTurn(0);
+    setCanClick(true);
+    setInventory(ShipTypes);
+    setLastAttempt(
+      {
+        hit: false,
+        positions: [],
+        direction: -1
+      }
+    );
+    setGame({id: 'RESET'});
+  }
+
   const handleBoardClick = (coordinate) => {
     if (game.winner || game.players.computer.board[coordinate].shot) return;
     attackCoordinate('computer', coordinate);
@@ -84,7 +83,7 @@ const Game = () => {
     setTimeout(() => {
       setCanClick(true);
       setTurn((turn) =>turn+1);
-    }, 1)
+    }, 1000)
   }
 
   const placeShips = (coordinate) => {
@@ -106,7 +105,6 @@ const Game = () => {
   }
   
   useEffect(() => {
-    // pass in previous state and can do it in a loop
     if (game.started || inventory.length === 0) return;
     const ship = inventory[0];
     const coordinates = Gameboard.randomCoordinates(ship, game.players.computer.board);
@@ -134,10 +132,7 @@ const Game = () => {
   },[game.players.human.ships])
 
   useEffect(() => {
-    // set turn to 1 to start? or have stages idk
     if (!game.started|| game.winner) return;
-    // check if last hit a ship if not random, if so use 'memory'
-    // I guess need to put this into a gameboard object?
     if (lastAttempt.hit && lastAttempt.positions[0] % 10 !== 0 && Gameboard.isValid(game.players.human.board, lastAttempt.positions[0], lastAttempt.direction)) {
       let coordinate = lastAttempt.positions[0];
       coordinate = coordinate + lastAttempt.direction;
@@ -171,7 +166,9 @@ const Game = () => {
   
   return (
     <div className="game">
-      <p>{game.message}</p>
+      <MessageBoard
+        message={game.message}
+      />
       <div className="gameboard">
         <Board
             gameboard={game.players.human.board}
@@ -187,6 +184,9 @@ const Game = () => {
             hideShips={false}
         />}
       </div>
+      {game.winner && <button onClick={resetGame}>
+          Replay?
+        </button>}
     </div>
     );
 }
@@ -194,6 +194,7 @@ const Game = () => {
 const App = () => {
   return (
     <div className="App">
+      <Header header={'Battleship!'}/>
       <Game />
     </div>
   );

@@ -1,6 +1,3 @@
-import ShipTypes from '../Ship/ShipTypes';
-import Ship from '../Ship/Ship'
-
 const Gameboard = (() => {
   const placeShip = (ship, board) => {
     
@@ -43,6 +40,7 @@ const Gameboard = (() => {
   }
 
   const randomCoordinates = (shipType, board) => {
+    let loopCatch = 0;
     const randomSpots = (shipType) => {
       const coordinate = Math.floor(Math.random() * 98)
       const coordinates = [coordinate];
@@ -52,8 +50,9 @@ const Gameboard = (() => {
       return coordinates;
     }
     let coordinates = randomSpots(shipType);
-    while(!validPlacement(coordinates, board)) {
+    while(!validPlacement(coordinates, board) && loopCatch < 11) {
         coordinates = randomSpots(shipType);
+        loopCatch++;
         console.log('this shouldnt go a lot')
     }
 

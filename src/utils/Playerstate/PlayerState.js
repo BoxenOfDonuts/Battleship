@@ -121,6 +121,9 @@ const updatePlayerStates = (state, action) => {
         started: action.started
       } 
     }
+    case "RESET": {
+      return init()
+    }
     default:
       console.log("BAD ACTION ID")
       console.error("BAD ACTION ID")
@@ -128,4 +131,28 @@ const updatePlayerStates = (state, action) => {
 
 }
 
-export default updatePlayerStates;
+const init = () => {
+  const initialState = {
+    players: {
+      computer: {
+        name: "HAL900",
+        board: Array(100).fill(null).map((value, index) =>({shot: false, ship: false})),
+        ships: {},
+        remainingShips: 0,
+      },
+      human: {
+        name: "Player",
+        board: Array(100).fill(null).map((value, index) =>({shot: false, ship: false})),
+        ships: {},
+        remainingShips: 0,
+      },
+    },
+    message: 'Click on the board to place your ship',
+    winner: '',
+    started: false,
+  }
+  return initialState
+}
+
+
+export { updatePlayerStates, init };

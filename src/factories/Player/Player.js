@@ -1,5 +1,3 @@
-import ShipTypes from '../Ship/ShipTypes';
-
 const attackOpponent = () => ({
   attack: (opponentsGameboard, coordinate) => {
     if (opponentsGameboard.board[coordinate].shot === true) return;
