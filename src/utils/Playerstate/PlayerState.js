@@ -147,7 +147,7 @@ const init = () => {
         remainingShips: 0,
       },
     },
-    message: 'Click on the board to place your ship',
+    message: 'Click on the board to place your ships',
     winner: '',
     started: false,
   }
