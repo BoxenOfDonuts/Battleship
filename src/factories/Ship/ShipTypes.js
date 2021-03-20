@@ -19,6 +19,6 @@ const ShipTypes = [
     name: 'Patrol Boat',
     length: 2,
   },
-]
+];
 
-export default ShipTypes
+export default ShipTypes;

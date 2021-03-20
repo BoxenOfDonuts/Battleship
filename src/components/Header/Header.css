@@ -8,7 +8,6 @@
   color: transparent;
 }
 
-
 @media only screen and (max-width: 445px) {
   .header > h1 > span {
     font-size: 2em;

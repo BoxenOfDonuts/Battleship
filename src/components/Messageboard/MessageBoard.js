@@ -6,6 +6,6 @@ const MessageBoard = ({ message }) => {
       <p>{message}</p>
     </div>
   );
-}
+};
 
-export default MessageBoard
+export default MessageBoard;

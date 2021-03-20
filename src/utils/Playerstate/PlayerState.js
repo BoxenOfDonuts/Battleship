@@ -3,20 +3,22 @@ import Ship from '../../factories/Ship/Ship';
 
 const updatePlayerStates = (state, action) => {
   switch (action.id) {
-    case "PLACE_SHIP": {
-               
+    case 'PLACE_SHIP': {
       const { name, coordinates } = action;
-      const ship = Ship(name, coordinates)
+      const ship = Ship(name, coordinates);
       const shipPlacement = {
         ...state.players[action.player].ships,
         [ship.data.name]: {
           name: name,
           health: coordinates.length,
           leftEdge: coordinates[0],
-          rightEdge: coordinates[coordinates.length -1],
-        }
-      }
-      const newBoard = Gameboard.placeShip(ship, state.players[action.player].board)
+          rightEdge: coordinates[coordinates.length - 1],
+        },
+      };
+      const newBoard = Gameboard.placeShip(
+        ship,
+        state.players[action.player].board
+      );
       return {
         ...state,
         players: {
@@ -24,14 +26,14 @@ const updatePlayerStates = (state, action) => {
           [action.player]: {
             ...state.players[action.player],
             board: newBoard,
-            ships: shipPlacement
-          }
+            ships: shipPlacement,
+          },
         },
       };
     }
-    case "ATTACK_SQUARE": {
-      const {opponent, coordinate} = action;
-      const newBoard = [...state.players[opponent].board]
+    case 'ATTACK_SQUARE': {
+      const { opponent, coordinate } = action;
+      const newBoard = [...state.players[opponent].board];
       newBoard[coordinate].shot = true;
       return {
         ...state,
@@ -39,22 +41,22 @@ const updatePlayerStates = (state, action) => {
           ...state.players,
           [opponent]: {
             ...state.players[opponent],
-            board: newBoard
-          }
-        }
-      }
+            board: newBoard,
+          },
+        },
+      };
     }
-    case "ATTACK_SHIP": {
-      const {opponent, coordinate} = action;
+    case 'ATTACK_SHIP': {
+      const { opponent, coordinate } = action;
       const shipKey = state.players[opponent].board[coordinate].ship;
       const ship = state.players[opponent].ships[shipKey];
       const newShips = {
         ...state.players[opponent].ships,
         [shipKey]: {
           ...ship,
-          health: ship.health -1
-        }
-      }
+          health: ship.health - 1,
+        },
+      };
       if (newShips[shipKey].health === 0) {
         newShips[shipKey].isSunk = true;
       }
@@ -65,26 +67,26 @@ const updatePlayerStates = (state, action) => {
           [opponent]: {
             ...state.players[opponent],
             ships: newShips,
-          }
-        }
-      }
+          },
+        },
+      };
     }
-    case "SEND_MESSAGE": {
+    case 'SEND_MESSAGE': {
       return {
         ...state,
-        message: action.message
-      }
+        message: action.message,
+      };
     }
-    case "SUNK_MESSAGE_SENT": {
+    case 'SUNK_MESSAGE_SENT': {
       const { player: opponent, shipKey } = action;
       const ship = state.players[opponent].ships[shipKey];
       const newShips = {
         ...state.players[opponent].ships,
         [shipKey]: {
           ...ship,
-          messageSent: true
-        }
-      }
+          messageSent: true,
+        },
+      };
       return {
         ...state,
         players: {
@@ -92,57 +94,60 @@ const updatePlayerStates = (state, action) => {
           [opponent]: {
             ...state.players[opponent],
             ships: newShips,
-          }
-        }
-      }
+          },
+        },
+      };
     }
-    case "UPDATE_REMAINING_SHIPS": {
+    case 'UPDATE_REMAINING_SHIPS': {
       const { player: opponent, value } = action;
       return {
         ...state,
         players: {
           ...state.players,
-          [opponent]:{
+          [opponent]: {
             ...state.players[opponent],
-            remainingShips: state.players[opponent].remainingShips + value
-          }
-        }
+            remainingShips: state.players[opponent].remainingShips + value,
+          },
+        },
       };
     }
-    case "UPDATE_WINNER": {
+    case 'UPDATE_WINNER': {
       return {
         ...state,
-        winner: action.winner
+        winner: action.winner,
       };
     }
-    case "GAME_START": {
+    case 'GAME_START': {
       return {
         ...state,
-        started: action.started
-      } 
+        started: action.started,
+      };
     }
-    case "RESET": {
-      return init()
+    case 'RESET': {
+      return init();
     }
     default:
-      console.log("BAD ACTION ID")
-      console.error("BAD ACTION ID")
+      console.log('BAD ACTION ID');
+      console.error('BAD ACTION ID');
   }
-
-}
+};
 
 const init = () => {
   const initialState = {
     players: {
       computer: {
-        name: "HAL900",
-        board: Array(100).fill(null).map((value, index) =>({shot: false, ship: false})),
+        name: 'HAL900',
+        board: Array(100)
+          .fill(null)
+          .map((value, index) => ({ shot: false, ship: false })),
         ships: {},
         remainingShips: 0,
       },
       human: {
-        name: "Player",
-        board: Array(100).fill(null).map((value, index) =>({shot: false, ship: false})),
+        name: 'Player',
+        board: Array(100)
+          .fill(null)
+          .map((value, index) => ({ shot: false, ship: false })),
         ships: {},
         remainingShips: 0,
       },
@@ -150,9 +155,8 @@ const init = () => {
     message: 'Click on the board to place your ships',
     winner: '',
     started: false,
-  }
-  return initialState
-}
-
+  };
+  return initialState;
+};
 
 export { updatePlayerStates, init };

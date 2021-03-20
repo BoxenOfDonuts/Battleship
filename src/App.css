@@ -1,15 +1,14 @@
 * {
   margin: 0;
   padding: 0;
-
 }
 
 :root {
   --ship-color: #8b949e;
   --sunk-color: #282c34;
-  --bg-color:#607D8B;
+  --bg-color: #607d8b;
   --board-color: #49cad7;
-  --battleship-lg: linear-gradient(135deg, #1F1C2C 30%, #928DAB 90%);
+  --battleship-lg: linear-gradient(135deg, #1f1c2c 30%, #928dab 90%);
   --button-color: #212121;
   --hover-ship-color: greenyellow;
 }
@@ -49,11 +48,11 @@ button {
   color: white;
   border-radius: 4px;
   border: 0px;
-  transition: filter 100ms;;
+  transition: filter 100ms;
 }
 
 button:hover {
-  filter: brightness(1.2)
+  filter: brightness(1.2);
 }
 
 @media only screen and (max-width: 950px) {
@@ -63,6 +62,5 @@ button:hover {
 
   .gameboard .board {
     margin: 20px auto;
-
   }
 }
