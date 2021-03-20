@@ -11,6 +11,7 @@
   --board-color: #49cad7;
   --battleship-lg: linear-gradient(135deg, #1F1C2C 30%, #928DAB 90%);
   --button-color: #212121;
+  --hover-ship-color: greenyellow;
 }
 
 html {

@@ -22,6 +22,8 @@ const Board = (props) => {
         ships={props.ships}
         position={props.gameboard[boardIndex]}
         hideShips={props.hideShips}
+        handleHover={props.onHover}
+        isHovering={props.isHovering}
       />
     })
 

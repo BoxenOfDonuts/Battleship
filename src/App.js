@@ -14,6 +14,7 @@ const Game = () => {
   const [ turn, setTurn ] = useState(0);
   const [ canClick, setCanClick ] = useState(true);
   const [ inventory, setInventory ] = useState(ShipTypes);
+  const [ isHovering, setIsHovering ] = useState([])
   const [ lastAttempt, setLastAttempt ] = useState(
     {
       hit: false,
@@ -101,7 +102,18 @@ const Game = () => {
     if (newInventory.length === 0) {
       setGame({id: 'GAME_START', started: true})
       setGame({id: "SEND_MESSAGE", message: 'Game Start!'})
+      setIsHovering([]);
     }
+  }
+
+  const handleHoverEffects = (coordinate) => {
+    if (game.started) return;
+    const ship = inventory[0];
+    const coordinates = [coordinate]
+    for (let i = 1; i < ship.length && (coordinate+i) % 10 !== 0; i++) {
+      coordinates.push(coordinate + i)
+    }
+    setIsHovering(coordinates);
   }
   
   useEffect(() => {
@@ -175,12 +187,15 @@ const Game = () => {
             ships={game.players.human.ships}
             clickable={!game.started}
             onClick={placeShips}
+            onHover={handleHoverEffects}
+            isHovering={isHovering}
+            
         />
         {game.started && <Board
             gameboard={game.players.computer.board}
-            onClick={handleBoardClick}
             ships={game.players.computer.ships}
             clickable={game.started && canClick}
+            onClick={handleBoardClick}
             hideShips={true}
         />}
       </div>
