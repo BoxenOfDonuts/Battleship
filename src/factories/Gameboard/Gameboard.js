@@ -12,7 +12,7 @@ const Gameboard = (() => {
     // const { positions } = ship.data;
     const start = coordinates[0];
     const end = coordinates[coordinates.length - 1];
-    if (start % 10 === 9 || end % 10 < start % 10) {
+    if ((start % 10 === 9 && start % 10 !== end % 10) || end % 10 < start % 10 || end > 99) {
       return false;
     }
     // for too close to another ship
@@ -57,7 +57,7 @@ const Gameboard = (() => {
     return coordinates;
   };
 
-  const isValid = (board, position, direction) => {
+  const isValidMovement = (board, position, direction) => {
     console.log(board[position + direction]);
     if (board[position + direction].shot) {
       return false;
@@ -65,7 +65,7 @@ const Gameboard = (() => {
     return true;
   };
 
-  return { placeShip, validPlacement, randomCoordinates, isValid };
+  return { placeShip, validPlacement, randomCoordinates, isValidMovement };
 })();
 
 export default Gameboard;

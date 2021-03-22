@@ -13,6 +13,7 @@ const Game = () => {
   const [canClick, setCanClick] = useState(true);
   const [inventory, setInventory] = useState(ShipTypes);
   const [isHovering, setIsHovering] = useState([]);
+  const [ isVertical, setIsVertical ] = useState(false);
   const [lastAttempt, setLastAttempt] = useState({
     hit: false,
     positions: [],
@@ -80,8 +81,9 @@ const Game = () => {
     const newInventory = inventory.slice(1, inventory.length);
     const ship = inventory[0];
     const coordinates = [coordinate];
+    const movement = isVertical ? 10 : 1;
     for (let i = 1; i < ship.length; i++) {
-      coordinates.push(coordinate + i);
+      coordinates.push(coordinate + (i * movement));
     }
     if (!Gameboard.validPlacement(coordinates, game.players.human.board))
       return;
@@ -104,8 +106,15 @@ const Game = () => {
     if (game.started) return;
     const ship = inventory[0];
     const coordinates = [coordinate];
-    for (let i = 1; i < ship.length && (coordinate + i) % 10 !== 0; i++) {
-      coordinates.push(coordinate + i);
+    const movement = isVertical ? 10 : 1;
+    if (isVertical) {
+      for (let i = 1; i < ship.length; i++) {
+        coordinates.push(coordinate + (i * movement));
+      }
+    } else {
+      for (let i = 1; i < ship.length && (coordinate + i) % 10 !== 0; i++) {
+        coordinates.push(coordinate + (i * movement));
+      }
     }
     setIsHovering(coordinates);
   };
@@ -155,7 +164,7 @@ const Game = () => {
     if (
       lastAttempt.hit &&
       lastAttempt.positions[0] % 10 !== 0 &&
-      Gameboard.isValid(
+      Gameboard.isValidMovement(
         game.players.human.board,
         lastAttempt.positions[0],
         lastAttempt.direction
@@ -189,6 +198,16 @@ const Game = () => {
     }
   }, [game.players.computer.remainingShips, game.players.human.remainingShips]);
 
+  let button = '';
+  if (game.winner) {
+    button = <button onClick={resetGame}>Replay?</button>;
+  } else if (!game.started) {
+    const message = isVertical ? 'Horizontal': 'Vertical';
+    button = <button onClick={() => setIsVertical(!isVertical)}>
+      {message}
+    </button>;
+  }
+
   return (
     <div className="game">
       <MessageBoard message={game.message} />
@@ -211,7 +230,7 @@ const Game = () => {
           />
         )}
       </div>
-      {game.winner && <button onClick={resetGame}>Replay?</button>}
+      {button}
     </div>
   );
 };
