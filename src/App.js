@@ -72,7 +72,7 @@ const Game = () => {
     setTimeout(() => {
       setCanClick(true);
       setTurn((turn) => turn + 1);
-    }, 1);
+    }, 1000);
   };
 
   const placeShips = (coordinate) => {
