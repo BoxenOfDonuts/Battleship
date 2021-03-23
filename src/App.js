@@ -206,7 +206,7 @@ const Game = () => {
             ships={game.players.computer.ships}
             clickable={game.started && canClick}
             onClick={handleBoardClick}
-            hideShips={false}
+            hideShips={true}
           />
         )}
       </div>
