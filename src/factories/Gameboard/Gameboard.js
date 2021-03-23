@@ -53,27 +53,23 @@ const Gameboard = (() => {
     while (!validPlacement(coordinates, board) && loopCatch < 11) {
       coordinates = randomSpots(shipType);
       loopCatch++;
-      console.log('this shouldnt go a lot');
     }
 
     return coordinates;
   };
 
   const isValidMovement = (board, position, direction) => {
-    if (position === 0) {
-      console.log(position, direction, position + direction)
-    }
     if (position + direction > 99 || position + direction  < 0) {
-      console.log('out of bounds')
+      // console.log('out of bounds')
       return false;
     } else if (board[position + direction].shot) {
-      console.log('already shot')
+      // console.log('already shot')
       return false;
     } else if (position % 10 === 0 && direction === -1) {
-      console.log('wraps left')
+      // console.log('wraps left')
       return false;
     } else if (position % 10 === 9 && direction === 1) {
-      console.log('wraps right')
+      // console.log('wraps right')
       return false;
     }
     return true;
