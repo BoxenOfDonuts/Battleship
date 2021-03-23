@@ -92,6 +92,7 @@ const Game = () => {
       player: 'human',
       name: ship.name,
       coordinates,
+      isVertical,
     });
     setGame({ id: 'UPDATE_REMAINING_SHIPS', player: 'human', value: 1 });
     if (newInventory.length === 0) {
@@ -125,11 +126,13 @@ const Game = () => {
       ship,
       game.players.computer.board
     );
+    const isVertical = coordinates[0] - coordinates[1] === 1 ? false: true;
     setGame({
       id: 'PLACE_SHIP',
       player: 'computer',
       name: ship.name,
       coordinates,
+      isVertical,
     });
     setGame({ id: 'UPDATE_REMAINING_SHIPS', player: 'computer', value: 1 });
   }, [inventory]);

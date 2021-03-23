@@ -53,9 +53,10 @@ const Square = ({
 
     marker = shot ? hitShot : '';
 
-    if (coordinate === ships[ship].leftEdge) {
+    if (ships[ship].leftEdge.includes(coordinate)) {
       classname += ' left-edge';
-    } else if (coordinate === ships[ship].rightEdge) {
+    } 
+    if (ships[ship].rightEdge.includes(coordinate)) {
       classname += ' right-edge';
     }
   } else {

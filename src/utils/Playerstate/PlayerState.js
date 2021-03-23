@@ -4,15 +4,24 @@ import Ship from '../../factories/Ship/Ship';
 const updatePlayerStates = (state, action) => {
   switch (action.id) {
     case 'PLACE_SHIP': {
-      const { name, coordinates } = action;
+      const { name, coordinates, isVertical } = action;
       const ship = Ship(name, coordinates);
+      let leftEdge = '';
+      let rightEdge = '';
+      if (isVertical) {
+        leftEdge = coordinates;
+        rightEdge = coordinates;
+      } else {
+        leftEdge = [coordinates[0]];
+        rightEdge = [coordinates[coordinates.length - 1]];
+      }
       const shipPlacement = {
         ...state.players[action.player].ships,
         [ship.data.name]: {
           name: name,
           health: coordinates.length,
-          leftEdge: coordinates[0],
-          rightEdge: coordinates[coordinates.length - 1],
+          leftEdge,
+          rightEdge,
         },
       };
       const newBoard = Gameboard.placeShip(
