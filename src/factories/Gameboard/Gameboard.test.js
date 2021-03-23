@@ -2,7 +2,7 @@ import Gameboard from './Gameboard';
 import Ship from '../Ship/Ship';
 
 describe('Test Suite for Gameboard', () => {
-  const board = Array(100)
+  let board = Array(100)
     .fill(null)
     .map((value, index) => ({ shot: false, ship: false }));
   const ship = Ship('Patrol Boat', [0, 1]);
@@ -83,4 +83,47 @@ describe('Test Suite for Gameboard', () => {
         .length
     ).toBe(2);
   });
+  it('Guesses where the ship is logically', () => {
+    const board = Array(100)
+      .fill(null)
+      .map((value, index) => ({ shot: false, ship: false }));
+    board[1].ship = true;
+    board[11].ship = true;
+    board[21].ship = true;
+    expect(Gameboard.determineGuessDirection(board, true, [11], -1)).toEqual([-1, 10]);
+    board[10].shot = true;
+    expect(Gameboard.determineGuessDirection(board, false, [11], -1)).toEqual([1, 12]);
+    board[12].shot = true;
+    expect(Gameboard.determineGuessDirection(board, false, [11], -1)).toEqual([10, 21]);
+    board[21].shot = true;
+    expect(Gameboard.determineGuessDirection(board, true, [21, 11], 10)).toEqual([10, 31]);
+    board[31].shot = true;
+    expect(Gameboard.determineGuessDirection(board, false, [21, 11], 10)).toEqual([-10, 1]);
+    board[1].shot = true;
+    expect(Gameboard.determineGuessDirection(board, false, [1, 21, 11], 10)).toContain(-1)
+  })
+  it('does not wrap on guesses', () => {
+    const board = Array(100)
+      .fill(null)
+      .map((value, index) => ({ shot: false, ship: false }));
+    board[90].ship = true;
+    board[89].ship = true;
+    expect(Gameboard.determineGuessDirection(board, true, [90], -1)).toEqual([1, 91]);
+    expect(Gameboard.determineGuessDirection(board, false, [89], -1)).toEqual([10, 99]);
+    expect(Gameboard.determineGuessDirection(board, false, [99], 1)).toEqual([-10, 89]);
+    expect(Gameboard.determineGuessDirection(board, true, [0], -1)).toEqual([1, 1]);
+  })
+  it('edges are hard', () => {
+    const board = Array(100)
+      .fill(null)
+      .map((value, index) => ({ shot: false, ship: false }));
+    board[90].ship = true;
+    board[80].ship = true;
+    board[70].ship = true;
+    expect(Gameboard.determineGuessDirection(board, true, [90], -1)).toEqual([1, 91]);
+    board[91].shot = true;
+    expect(Gameboard.determineGuessDirection(board, false, [90], 1)).toEqual([-10, 80]);
+    board[80].shot = true;
+    expect(Gameboard.determineGuessDirection(board, true, [80, 90], -10)).toEqual([-10, 70]);
+  })
 });

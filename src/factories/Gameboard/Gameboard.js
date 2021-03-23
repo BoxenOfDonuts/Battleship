@@ -41,9 +41,11 @@ const Gameboard = (() => {
     let loopCatch = 0;
     const randomSpots = (shipType) => {
       const coordinate = Math.floor(Math.random() * 98);
+      const directions = [1, 10];
+      const increment = directions[Math.floor(Math.random() * 2)];
       const coordinates = [coordinate];
       for (let i = 1; i < shipType.length; i++) {
-        coordinates.push(coordinate + i);
+        coordinates.push(coordinate + (i * increment));
       }
       return coordinates;
     };
@@ -58,14 +60,71 @@ const Gameboard = (() => {
   };
 
   const isValidMovement = (board, position, direction) => {
-    console.log(board[position + direction]);
-    if (board[position + direction].shot) {
+    if (position === 0) {
+      console.log(position, direction, position + direction)
+    }
+    if (position + direction > 99 || position + direction  < 0) {
+      console.log('out of bounds')
+      return false;
+    } else if (board[position + direction].shot) {
+      console.log('already shot')
+      return false;
+    } else if (position % 10 === 0 && direction === -1) {
+      console.log('wraps left')
+      return false;
+    } else if (position % 10 === 9 && direction === 1) {
+      console.log('wraps right')
       return false;
     }
     return true;
   };
 
-  return { placeShip, validPlacement, randomCoordinates, isValidMovement };
+  const determineGuessDirection = (board, didHit, positions, direction) => {
+    const originalHit = positions[positions.length -1];
+    if (
+      didHit &&
+      isValidMovement(
+      board,
+      positions[0],
+      direction
+    )
+    ) {
+      return [direction, positions[0] + direction];
+      // ugh, remove !hit ?
+    } else if (positions.length > 0) {
+      if (isValidMovement(board, originalHit, 1)) {
+        return [1, originalHit + 1];
+      } else if (isValidMovement(board, originalHit, 10)) {
+        return [10, originalHit + 10];
+      } else if (isValidMovement(board, originalHit, -10)) {
+        return [-10, originalHit -10];
+      }
+    }
+
+    const randomCoordinate = randomOpenSpot(board)
+
+    return [-1, randomCoordinate] ;
+  }
+
+  const randomOpenSpot = (opponentsGameboard) => {
+    let openSpots = [];
+    for (let index in opponentsGameboard) {
+      if (!opponentsGameboard[index].shot) {
+        openSpots.push(Number(index));
+      }
+    }
+    const randomIndex = Math.floor(Math.random() * openSpots.length);
+    const randomAttack = openSpots[randomIndex];
+    return randomAttack;
+  }
+
+  return {
+    placeShip,
+    validPlacement,
+    randomCoordinates,
+    determineGuessDirection
+  };
+
 })();
 
 export default Gameboard;

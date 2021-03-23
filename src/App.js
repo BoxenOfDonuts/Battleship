@@ -1,7 +1,6 @@
 import './App.css';
 import ShipTypes from './factories/Ship/ShipTypes';
 import Board from './components/Board/Board';
-import Player from './factories/Player/Player';
 import Gameboard from './factories/Gameboard/Gameboard';
 import Header from './components/Header/Header';
 import MessageBoard from './components/Messageboard/MessageBoard';
@@ -73,7 +72,7 @@ const Game = () => {
     setTimeout(() => {
       setCanClick(true);
       setTurn((turn) => turn + 1);
-    }, 1000);
+    }, 1);
   };
 
   const placeShips = (coordinate) => {
@@ -153,7 +152,6 @@ const Game = () => {
           hit: false,
           positions: [],
           direction: -1,
-          sunk: null,
         });
       }
     }
@@ -161,30 +159,9 @@ const Game = () => {
 
   useEffect(() => {
     if (!game.started || game.winner) return;
-    if (
-      lastAttempt.hit &&
-      lastAttempt.positions[0] % 10 !== 0 &&
-      Gameboard.isValidMovement(
-        game.players.human.board,
-        lastAttempt.positions[0],
-        lastAttempt.direction
-      )
-    ) {
-      let coordinate = lastAttempt.positions[0];
-      coordinate = coordinate + lastAttempt.direction;
-      console.log(`last attempt hit, trying ${coordinate}`);
-      attackCoordinate('human', coordinate);
-    } else if (lastAttempt.positions.length > 0) {
-      let coordinate = lastAttempt.positions[lastAttempt.positions.length - 1];
-      coordinate = coordinate + 1;
-      console.log(`last attemp missed, trying the other way... ${coordinate}`);
-      attackCoordinate('human', coordinate);
-      setLastAttempt((prevState) => ({ ...prevState, direction: 1 }));
-    } else {
-      const p = Player();
-      const coordinate = p.randomOpenSpot(game.players.human.board);
-      attackCoordinate('human', coordinate);
-    }
+    const [direction, coordinate] = Gameboard.determineGuessDirection(game.players.human.board, lastAttempt.hit, lastAttempt.positions, lastAttempt.direction);
+    attackCoordinate('human', coordinate);
+    setLastAttempt((prevState) => ({ ...prevState, direction}));
   }, [turn]);
 
   useEffect(() => {
@@ -226,7 +203,7 @@ const Game = () => {
             ships={game.players.computer.ships}
             clickable={game.started && canClick}
             onClick={handleBoardClick}
-            hideShips={true}
+            hideShips={false}
           />
         )}
       </div>
