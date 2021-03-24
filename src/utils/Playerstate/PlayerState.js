@@ -6,22 +6,14 @@ const updatePlayerStates = (state, action) => {
     case 'PLACE_SHIP': {
       const { name, coordinates, isVertical } = action;
       const ship = Ship(name, coordinates);
-      let leftEdge = '';
-      let rightEdge = '';
-      if (isVertical) {
-        leftEdge = coordinates;
-        rightEdge = coordinates;
-      } else {
-        leftEdge = [coordinates[0]];
-        rightEdge = [coordinates[coordinates.length - 1]];
-      }
+
       const shipPlacement = {
         ...state.players[action.player].ships,
         [ship.data.name]: {
           name: name,
           health: coordinates.length,
-          leftEdge,
-          rightEdge,
+          isVertical,
+          coordinates,
         },
       };
       const newBoard = Gameboard.placeShip(

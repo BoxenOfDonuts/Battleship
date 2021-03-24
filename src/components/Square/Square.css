@@ -2,8 +2,8 @@
   background-color: var(--ship-color);
   border-left: 1px solid var(--ship-color);
   border-right: 1px solid var(--ship-color);
-  border-bottom: 1px solid black;
-  border-top: 1px solid black;
+  border-bottom: 1px solid var(--ship-color);
+  border-top: 1px solid var(--ship-color);
 }
 
 .ship.hidden {
@@ -23,12 +23,25 @@
   border: 1px solid var(--sunk-color);
 }
 
+.ship.top {
+  border-top: 1px solid black;
+}
+
+.ship.bottom {
+  border-bottom: 1px solid black;
+}
+
 .ship.right-edge {
   border-right: 1px solid black;
 }
 
 .ship.left-edge {
   border-left: 1px solid black;
+}
+
+.ship.vertical {
+  border-left: 1px solid black;
+  border-right: 1px solid black;
 }
 
 .no-click {

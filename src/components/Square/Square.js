@@ -53,12 +53,25 @@ const Square = ({
 
     marker = shot ? hitShot : '';
 
-    if (ships[ship].leftEdge.includes(coordinate)) {
-      classname += ' left-edge';
-    } 
-    if (ships[ship].rightEdge.includes(coordinate)) {
-      classname += ' right-edge';
+    // check if ship is vertical or not and style that way I guess
+    if (ships[ship].isVertical) {
+      classname += ' vertical';
+      if(coordinate === ships[ship].coordinates[0]) {
+        classname += ' top';
+      }
+      if (coordinate === ships[ship].coordinates[ships[ship].coordinates.length -1]) {
+        classname += ' bottom';
+      }
+    } else {
+      classname += ' bottom top';
+      if(coordinate === ships[ship].coordinates[0]) {
+        classname += ' left-edge';
+      }
+      if (coordinate === ships[ship].coordinates[ships[ship].coordinates.length -1]) {
+        classname += ' right-edge';
+      }
     }
+
   } else {
     marker = shot ? missedShot : '';
   }
